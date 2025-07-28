@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>5.4 - A Simple Model &mdash; LearnWebGL</title>
+    
+    <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-3.0.0/css/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/video.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/poll.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/tabbedstuff.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pytutor.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/modal-basic.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/codemirror.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/activecode.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/parsons.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/lib/prettify.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/codemirror.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/webglcode.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/webglcodedemo.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/matrixeq.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/jquery-ui-1.10.3.custom.min.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/user-highlights.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/runestone-custom-sphinx-bootstrap.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/poll.js"></script>
+    <script type="text/javascript" src="../_static/d3.v2.min.js"></script>
+    <script type="text/javascript" src="../_static/jquery.ba-bbq.min.js"></script>
+    <script type="text/javascript" src="../_static/jquery.jsPlumb-1.3.10-all-min.js"></script>
+    <script type="text/javascript" src="../_static/pytutor.js"></script>
+    <script type="text/javascript" src="../_static/jquery.highlight.js"></script>
+    <script type="text/javascript" src="../_static/bookfuncs.js"></script>
+    <script type="text/javascript" src="../_static/codemirror.js"></script>
+    <script type="text/javascript" src="../_static/xml.js"></script>
+    <script type="text/javascript" src="../_static/css.js"></script>
+    <script type="text/javascript" src="../_static/htmlmixed.js"></script>
+    <script type="text/javascript" src="../_static/python.js"></script>
+    <script type="text/javascript" src="../_static/javascript.js"></script>
+    <script type="text/javascript" src="../_static/activecode.js"></script>
+    <script type="text/javascript" src="../_static/skulpt.min.js"></script>
+    <script type="text/javascript" src="../_static/skulpt-stdlib.js"></script>
+    <script type="text/javascript" src="../_static/assess.js"></script>
+    <script type="text/javascript" src="../_static/animationbase.js"></script>
+    <script type="text/javascript" src="../_static/lib/jquery.min.js"></script>
+    <script type="text/javascript" src="../_static/lib/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="../_static/lib/prettify.js"></script>
+    <script type="text/javascript" src="../_static/lib/underscore-min.js"></script>
+    <script type="text/javascript" src="../_static/lib/lis.js"></script>
+    <script type="text/javascript" src="../_static/parsons.js"></script>
+    <script type="text/javascript" src="../_static/parsons-noconflict.js"></script>
+    <script type="text/javascript" src="../_static/codemirror.js"></script>
+    <script type="text/javascript" src="../_static/xml.js"></script>
+    <script type="text/javascript" src="../_static/css.js"></script>
+    <script type="text/javascript" src="../_static/htmlmixed.js"></script>
+    <script type="text/javascript" src="../_static/javascript.js"></script>
+    <script type="text/javascript" src="../_static/webglcode.js"></script>
+    <script type="text/javascript" src="../_static/FileSaver.min.js"></script>
+    <script type="text/javascript" src="../_static/Blob.js"></script>
+    <script type="text/javascript" src="../_static/matrixeq.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/jquery-ui-1.10.3.custom.min.js"></script>
+    <script type="text/javascript" src="../_static/jquery-fix.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-3.0.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../_static/bootstrap-sphinx.js"></script>
+    <script type="text/javascript" src="../_static/waypoints.min.js"></script>
+    <script type="text/javascript" src="../_static/rangy-core.js"></script>
+    <script type="text/javascript" src="../_static/rangy-textrange.js"></script>
+    <script type="text/javascript" src="../_static/rangy-cssclassapplier.js"></script>
+    <script type="text/javascript" src="../_static/user-highlights.js"></script>
+    <script type="text/javascript" src="../_static/jquery.idle-timer.js"></script>
+    <script type="text/javascript" src="../_static/processing-1.4.1.min.js"></script>
+    <script type="text/javascript" src="../_static/jquery.hotkey.js"></script>
+    <script type="text/javascript" src="../_static/jquery-migrate-1.2.1.min.js"></script>
+    <link rel="top" title="LearnWebGL" href="../index.html" />
+    <link rel="next" title="5.5 - Example 1: One Color per Model" href="render_example_01.html" />
+    <link rel="prev" title="5.3 - A Primer on Buffer Objects" href="buffer_object_primer.html" />
+<meta charset='utf-8'>
+<meta http-equiv='X-UA-Compatible' content='IE=edge,chrome=1'>
+<meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
+<script type="text/javascript">
+  eBookConfig = {};
+  eBookConfig.host = 'http://127.0.0.1:8000' ? 'http://127.0.0.1:8000' : 'http://127.0.0.1:8000';
+  eBookConfig.app = eBookConfig.host+'/runestone';
+  eBookConfig.ajaxURL = eBookConfig.app+'/ajax/';
+  eBookConfig.course = 'LearnWebGL';
+  eBookConfig.logLevel = 10;
+  eBookConfig.loginRequired = false
+  eBookConfig.build_info = "";
+  eBookConfig.isLoggedIn = false;
+</script>
+
+<div id="fb-root"></div>
+<script>
+  (function(d, s, id) {
+    var js, fjs = d.getElementsByTagName(s)[0];
+    if (d.getElementById(id)) return;
+    js = d.createElement(s); js.id = id;
+    js.src = "//connect.facebook.net/en_US/all.js#xfbml=1&status=0";
+    fjs.parentNode.insertBefore(js, fjs);
+  }(document, 'script', 'facebook-jssdk'));
+</script>
+
+
+
+  </head>
+  <body role="document">
+
+
+<!-- Begin navbar -->
+<div id="navbar" class="navbar navbar-default navbar-fixed-top" role="navigation">
+
+  <div class="container">
+
+    <div class="navbar-header">
+      <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+      <button type='button' class='navbar-toggle' data-toggle="collapse" data-target=".navbar-ex1-collapse">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+
+      <div>
+        <a class="brand-logo" style='background: transparent url("../_static/img/logo_small.png") no-repeat 0px 0px;' href="/runestone/default/user/login">&nbsp; </a>
+        <a class="navbar-brand" href="../index.html">Learn WebGL</a>
+      </div>
+    </div>
+
+    <div class="navbar-collapse collapse navbar-ex1-collapse">
+
+      <ul class="nav navbar-nav navbar-right">
+
+        <li class="divider-vertical"></li>
+
+        <!-- social media dropdown -->
+        <!--
+        <li class="dropdown">
+          <a class="dropdown-toggle" href="#" data-toggle="dropdown">
+            <i class="glyphicon glyphicon-share-alt" style="opacity: 0.9"></i>
+          </a>
+          <ul class="dropdown-menu social-menu">
+              <li>
+                <div>
+                  <b>Runestone in social media:</b>
+                </div>
+                <a href="https://twitter.com/iRunestone" class="twitter-follow-button" data-show-count="true">Follow @iRunestone</a><script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
+                <div class="fb-like" data-href="https://www.facebook.com/RunestoneInteractive" data-send="false" data-layout="button_count" data-width="300" data-show-faces="false" data-font="arial"></div>
+              </li>
+
+              <li class="divider"></li>
+              <li>
+                <div>
+                  <b>Help support us:</b>
+                </div>
+                <div class="gittip">
+                  <iframe style="border:0;"
+                    src="https://www.gittip.com/bnmnetp/widget.html"
+                    width="48pt" height="22pt" class="gittip-button">
+                  </iframe>
+                </div>
+                <div>
+                    <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+                  <input type="hidden" name="cmd" value="_s-xclick">
+                  <input type="hidden" name="encrypted" value="-----BEGIN PKCS7-----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-----END PKCS7-----
+                  ">
+                  <input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+                  <img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+                  </form>
+
+                </div>
+              </li>
+          </ul>
+        </li>
+        -->
+        <!-- end social media dropdown -->
+
+        <li class="divider-vertical"></li>
+
+        <!-- search dropdown -->
+        <li class="dropdown">
+          <a class="dropdown-toggle" href="#" data-toggle="dropdown">
+            <i class="glyphicon glyphicon-search" style='opacity:0.9;'></i>
+          </a>
+          <ul class='dropdown-menu'>
+            
+                <li><a href='../index.html'>Table of Contents</a></li>
+            
+            <!-- <li><a href='/runestone/static/LearnWebGL/genindex.html'>Book Index</a></li> -->
+            <li><a href='/LearnWebGL/genindex.html'>Book Index</a></li>
+            <!--
+            <li class="divider"></li>
+            <li id="scratch_ac_link"><a href="javascript:toggleScratchActivecode()">Scratch ActiveCode</a></li>
+            <li class="divider"></li>
+            -->
+            <li style="width: 240px;">
+              <form class="navbar-search" style="margin:10px;" action="../search.html" method="get">
+                <div class="input-group">
+                  <input type="text" class="form-control" name="q" placeholder="Search this book" />
+                  <span class="input-group-btn">
+                    <button class="btn btn-primary" style="margin:0;" type="submit">
+                      <i class="glyphicon glyphicon-search"></i>
+                    </button>
+                  </span>
+                </div><!-- /input-group -->
+                <input type="hidden" name="check_keywords" value="yes" />
+                <input type="hidden" name="area" value="default" />
+              </form>
+            </li>
+          </ul>
+        </li>
+        <!-- end search dropdown -->
+
+        <li class="divider-vertical"></li>
+
+        <!-- user account dropdown -->
+        <!--
+        <li class="dropdown">
+          <a class="dropdown-toggle" href="#" data-toggle="dropdown">
+            <i class="glyphicon glyphicon-user" style="opacity:0.9;"></i>
+          </a>
+          <ul class="dropdown-menu user-menu">
+            <li><span class='loggedinuser'></span></li>
+            <li class="divider"></li>
+            <li><a href='http://127.0.0.1:8000/runestone/mygroup/initiateGroup' id="joinGroupLink">Join a Study Group</a></li>
+            <li><a href='http://127.0.0.1:8000/runestone/mygroup/schedule' id="groupScheduleLink">Group Schedule</a></li>
+            <li><a href='http://127.0.0.1:8000/runestone/mygroup/newschedule' id="newChapterLink">Schedule New Chapter</a></li>
+            <li><a href='http://127.0.0.1:8000/runestone/mygroup/manageGroup' id="manageGroupLink">Manage Group</a></li>
+			<li class="divider"></li>
+            <li><a href='http://127.0.0.1:8000/runestone/admin/index'>Instructor's Page</a></li>
+            <li><a href='http://127.0.0.1:8000/runestone/assignments/index'>Progress Page</a></li>
+            <li class="divider"></li>
+            <li><a href="http://127.0.0.1:8000/runestone/default/user/profile" id="profilelink">Edit Profile</a></li>
+            <li><a href="http://127.0.0.1:8000/runestone/default/user/change_password" id="passwordlink">Change Password</a></li>
+            <li><a href="http://127.0.0.1:8000/runestone/default/user/register" id="registerlink">Register</a></li>
+            <li class='loginout'><a href='#'>Login</a></li> -- correct link populated by addNavbarLoginLink()
+          </ul>
+        </li>
+        -->
+        <!-- end user account dropdown -->
+
+        <li class="divider-vertical"></li>
+
+        <!-- help menu dropdown -->
+        <!--
+        <li class="dropdown">
+          <a class="dropdown-toggle" href="#" data-toggle="dropdown">
+            <i class="glyphicon glyphicon-question-sign" style="opacity:0.9;"></i>
+          </a>
+          <ul class="dropdown-menu user-menu">
+            <li><a href='/runestone/static/LearnWebGL/navhelp.html'>Navigation Help</a></li>
+            <li><a href='/runestone/static/overview/instructor.html'>Help for Instructors</a></li>
+            <li class="divider"></li>
+            <li><a href='http://runestoneinteractive.org'>About Runestone</a></li>
+            <li><a href='https://github.com/bnmnetp/runestone/issues/new'>Report A Problem</a></li>
+          </ul>
+        </li>
+        -->
+        <!-- end help menu dropdown -->
+
+        <li class="divider-vertical"></li>
+
+      </ul>
+
+      <ul class="nav navbar-nav">
+        <li class="divider-vertical"></li>
+        <!--
+          <li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown">Page <b class="caret"></b></a>
+  <ul class="dropdown-menu localtoc"><ul>
+<li><a class="reference internal" href="#">5.4 - A Simple Model</a><ul>
+<li><a class="reference internal" href="#a-simple-3d-model">A Simple 3D Model</a></li>
+<li><a class="reference internal" href="#a-side-note-about-javascript-functions">A Side Note about JavaScript Functions</a></li>
+</ul>
+</li>
+</ul>
+</ul>
+</li>
+          <li class="divider-vertical"></li>
+        
+        
+          
+  <li id="relations-prev" title="Previous Chapter - 5.3 - A Primer on Buffer Objects" data-toggle="tooltip">
+    <a href="buffer_object_primer.html" >
+      <i class='glyphicon glyphicon-backward' style='opacity:0.9;'></i>
+    </a>
+  </li>
+  
+  <li id="relations-next" title='Next Chapter - 5.5 - Example 1: One Color per Model' data-toggle="tooltip" >
+    <a href="render_example_01.html" >
+      <i class='glyphicon glyphicon-forward' style='opacity:0.9;'></i>
+    </a>
+  </li>
+  <li class="divider-vertical"></li>
+
+<script type="text/javascript">
+  opts = {'placement':'bottom',
+          'selector': '',
+          'delay': { show: 100, hide: 50}
+         };
+
+  $('#relations-prev').tooltip(opts);
+  $('#relations-next').tooltip(opts);
+</script>
+        -->
+        
+          <li></li>
+        
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+<div class="container" id="continue-reading"></div>
+
+<div class="container" id="main-content">
+  
+  <div class="section" id="a-simple-model">
+<h1>5.4 - A Simple Model<a class="headerlink" href="#a-simple-model" title="Permalink to this headline">¶</a></h1>
+<p>Rendering a model is not a simple process. It will be easier to understand
+how things work if we start with the simplest example possible and gradually add
+complexity. When you render complex models you will want to design
+those models in Blender (or some other modeling tool). For our purposes here,
+let&#8217;s manually define a very simple 3D model to work with.</p>
+<div class="section" id="a-simple-3d-model">
+<h2>A Simple 3D Model<a class="headerlink" href="#a-simple-3d-model" title="Permalink to this headline">¶</a></h2>
+<p>Examine the code in the &#8216;simple_model_01.js&#8217; file below. Note the following big ideas:</p>
+<ul class="simple">
+<li>The <code class="code docutils literal"><span class="pre">Triangle</span></code> function (line 37) is a class definition that contains no
+functionality. It will hold the data that defines one triangle. To start
+off simple, a <code class="code docutils literal"><span class="pre">Triangle</span></code> object will hold an array of three vertices.</li>
+<li>The <code class="code docutils literal"><span class="pre">SimpleModel</span></code> function (line 48) is a class definition that contains no
+functionality. It will hold a &#8220;name&#8221; for a model and an array of
+triangle objects. A model, in its simplest form, is just a collection of
+triangles.</li>
+<li>The <code class="code docutils literal"><span class="pre">CreatePyramid</span></code> function (line 59) creates an instance of the
+<code class="code docutils literal"><span class="pre">SimpleModel</span></code> class
+called model, gives it a name called &#8216;simple&#8217;, and sets its array of triangles
+to the 4 triangles of a pyramid.</li>
+</ul>
+<p>Note: You can edit the JavaScript code and &#8220;re-start&#8221; the rendering if you
+want to experiment. If you introduce errors in the code you might have to
+reload the page to get a fresh, error-free version of the code.</p>
+<!-- webgl start -->
+  <script>
+    var W1_directive = new Webgl_directive( 'W1' );
+  </script>
+  <div class='webgl_container' id='W1_webgl_container'>
+<div class='webgl_cmds' id='W1_webgl_cmds'>
+<button class='btn btn-success' id='W1_runb' onclick='W1_program.reload();'>Re-start</button>
+Show:
+<input type='checkbox' id='W1_show_code' onclick='W1_directive.show_webgl("W1_show_code",1);' checked='checked' /> Code
+<input type='checkbox' id='W1_show_canvas' onclick='W1_directive.show_webgl("W1_show_canvas",2);' checked='checked' /> Canvas
+<input type='checkbox' id='W1_show_info' onclick='W1_directive.show_webgl("W1_show_info",3);'/> Run Info
+<button class='btn btn-default' id='W1_saveall' onclick='W1_program.downloadAll();'>Download All</button>
+</div>
+<div class='webgl_row2' id='W1_webgl_row2'>
+<div class='webgl_editors' id='W1_webgl_editors'>
+<ul class='webgl_nav_tabs' id='W1_tab'>
+<li>
+    <a data-toggle='tab' href='#W1_simple_model_01_js'><span>simple_model_01.js</span></a>
+</li>
+</ul><div style='width:100%; position:relative;'>
+<div class="webgl_code"><div class='webgl_tab_content' id='W1_simple_model_01_js'>
+<textarea id="W1_simple_model_01_js_textarea" class="webgl_tabbed_editor">
+/**
+ * simple_model_01.js, By Wayne Brown, Spring 2016
+ */
+
+/**
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2015 C. Wayne Brown
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
+"use strict";
+
+//-------------------------------------------------------------------------
+/**
+ * A simple triangle composed of 3 vertices.
+ * @param vertices Array An array of 3 vertices.
+ * @constructor
+  */
+window.Triangle = function (vertices) {
+  var self = this;
+  self.vertices = vertices;
+};
+
+//-------------------------------------------------------------------------
+/**
+ * A simple model composed of an array of triangles.
+ * @param name String The name of the model.
+ * @constructor
+ */
+window.SimpleModel = function (name) {
+  var self = this;
+  self.name = name;
+  self.triangles = [];
+};
+
+//-------------------------------------------------------------------------
+/**
+ * Create a Simple_model of 4 triangles that forms a pyramid.
+ * @return SimpleModel
+ */
+window.CreatePyramid = function () {
+  var vertices, triangle1, triangle2, triangle3, triangle4;
+
+  // Vertex data
+  vertices = [  [ 0.0, -0.25, -0.50],
+                [ 0.0,  0.25,  0.00],
+                [ 0.5, -0.25,  0.25],
+                [-0.5, -0.25,  0.25] ];
+
+  // Create 4 triangles
+  triangle1 = new Triangle([vertices[2], vertices[1], vertices[3]]);
+  triangle2 = new Triangle([vertices[3], vertices[1], vertices[0]]);
+  triangle3 = new Triangle([vertices[0], vertices[1], vertices[2]]);
+  triangle4 = new Triangle([vertices[0], vertices[2], vertices[3]]);
+
+  // Create a model that is composed of 4 triangles
+  var model = new SimpleModel("simple");
+  model.triangles = [ triangle1, triangle2, triangle3, triangle4 ];
+
+  return model;
+};
+
+</textarea>
+
+<script>
+    W1_directive.createCodeMirrorEditor('W1_simple_model_01_js', 'simple_model_01.js', 'js' );
+</script>
+</div>
+<div style="clear:both;"></div>
+</div>
+</div>
+</div>
+<div class='webgl_canvas' id='W1_webgl_canvas'><span style="display: none;">./simple_pyramid/simple_pyramid.html</span>
+<p>A simple, manually defined 3D model. You can spin the model with your mouse.</p>
+
+<!--The canvas window for rendering 3D graphics -->
+<canvas id="W1_canvas" class="canvas3D">
+  Please use a browser that supports "canvas"
+</canvas>
+<br>
+
+<!-- An HTML control element that can be used to modify the rendering behavior -->
+<input type="checkbox" id="my_pause" checked> Animate<br>
+
+<!-- Load the JavaScript libraries and data files for the WebGL rendering -->
+<script src="../lib/learn_webgl.js"></script>
+<script src="../lib/learn_webgl_console_messages.js"></script>
+<script src="../lib/learn_webgl_point4.js"></script>
+<script src="../lib/learn_webgl_vector3.js"></script>
+<script src="../lib/learn_webgl_matrix.js"></script>
+<script src="./simple_pyramid/simple_model_01.js"></script>
+<script src="./simple_pyramid/simple_model_render_01.js"></script>
+<script src="./simple_pyramid/simple_pyramid_render_01.js"></script>
+<script src="./simple_pyramid/simple_pyramid_events_01.js"></script>
+
+<!--
+  Create an instance of the learn_webgl class, and start the WebGL program.
+  We do this here to pass the canvas ID into the javascript code.
+-->
+<script>
+  var models = [];
+  var shaders = ["../lib/shaders/shader01.vert", "../lib/shaders/shader01.frag"];
+  var controls = ["my_pause"];
+  var W1_program = new Learn_webgl("W1_canvas", "SceneSimplePyramidRender", models, shaders, controls, W1_directive);
+</script>
+
+</div>
+<div style='clear:both;'></div></div>
+<div class='webgl_output' id='W1_webgl_output'>
+<div>
+<input type="checkbox" id="W1_webgl_displayErrors" name="Display" value="Errors" checked='checked' />
+<span id="webgl_errorMessages">Shader errors</span>,
+<input type="checkbox" id="W1_webgl_displayWarnings" name="Display" value="Warnings" checked='checked' />
+<span id="webgl_warningMessages">Shader warnings</span>,
+<input type="checkbox" id="W1_weggl_displayInfo" name="Display" value="InfoMessages" checked='checked' />
+<span id="infoMessages">Javascript info</span>
+</div>
+
+<div id="W1_webgl_output_div" class="webgl_output_div">
+</div>
+</div>
+<div style='clear:both;'></div>
+<a href="simple_pyramid/simple_pyramid.html" target="_blank">Open this webgl program in a new tab or window</a></div>
+<!-- webgl end --><p> </p>
+
+    <script type='text/javascript'>
+        W1_directive.show_webgl("W1_show_code",1);
+        W1_directive.show_webgl("W1_show_canvas",2);
+        W1_directive.show_webgl("W1_show_info",3);
+        W1_directive.set_canvas_height(0);
+        W1_directive.set_height_of_webgl_editors("W1",0);
+        W1_directive.bring_first_editor_to_front("W1");
+    </script>
+<p>In the following sequence of lessons we will use this simple
+model to do the following:</p>
+<ul class="simple">
+<li>Render the pyramid using a single color for the entire model.</li>
+<li>Render the pyramid using a different color for each face.</li>
+<li>Render the pyramid using a different color for each vertex.</li>
+<li>Render the pyramid using texture coordinates for each vertex.</li>
+</ul>
+<p>What you will discover as you go through these various examples is that your
+<em>shader programs</em>, <em>buffer objects</em>, and JavaScript rendering code is
+very interdependent. As you change one of them, they all must change!</p>
+</div>
+<div class="section" id="a-side-note-about-javascript-functions">
+<h2>A Side Note about JavaScript Functions<a class="headerlink" href="#a-side-note-about-javascript-functions" title="Permalink to this headline">¶</a></h2>
+<p>In order for the demo code to be editable in the web page, the functions
+have to defined using a non-standard syntax that makes them changeable
+&#8220;after the fact&#8221;. Functions are added to the JavaScript environment when
+a web page is loaded. But the demo code needs to redefine them.
+This is tricky JavaScript stuff that
+I would like to <strong>not</strong> explain, but you will be confused if it is not
+explained, so here goes...</p>
+<p>Global JavaScript scope is defined by a special object named <code class="code docutils literal"><span class="pre">window</span></code>. If you
+would like to examine this object, type <code class="code docutils literal"><span class="pre">window</span></code> into the JavaScript
+console pane in the Developer Tools and hit enter. You can then expand the object to see its
+properties by clicking on the right arrow in front of the object. (The global
+environment has a lot of stuff in it!!!!)</p>
+<p>When you define a function you are creating an object. Objects can be
+assigned to a variable, passed as a parameter, or modified like any variable.
+When you create a function at global scope a new property of the <code class="code docutils literal"><span class="pre">window</span></code>
+object is added using the name of the function as the property name. This new
+property is a reference to the new function object. However,
+JavaScript adds extra properties to the function object that makes the object
+non-modifiable. Let&#8217;s look at an example:</p>
+<div class="highlight-JavaScript"><div class="highlight"><pre><span class="c1">// Create a global function</span>
+<span class="kd">function</span> <span class="nx">example1</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span><span class="nx">b</span><span class="p">,</span><span class="nx">c</span><span class="p">)</span> <span class="p">{</span>
+ <span class="p">...</span>
+<span class="p">}</span>
+
+<span class="c1">// Create a function and store it in a global variable</span>
+<span class="kd">var</span> <span class="nx">example2</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">a</span><span class="p">,</span><span class="nx">b</span><span class="p">,</span><span class="nx">c</span><span class="p">)</span> <span class="p">{</span>
+  <span class="p">...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>You now have two new function objects and two new properties of the
+<code class="code docutils literal"><span class="pre">window</span></code> object: <code class="code docutils literal"><span class="pre">window.example1</span></code> and <code class="code docutils literal"><span class="pre">window.example2</span></code>.
+Both properties hold a reference to a function object. However, the objects
+have been modified with secret properties that make the functions unchangeable.</p>
+<p>If we define a property of the <code class="code docutils literal"><span class="pre">window</span></code> object directly, no secret
+properties are added to the function definition or the <code class="code docutils literal"><span class="pre">window</span></code> property.
+Therefore, if we define a global function like this:</p>
+<div class="highlight-JavaScript"><div class="highlight"><pre><span class="c1">// Create a global property that references a function</span>
+<span class="nb">window</span><span class="p">.</span><span class="nx">example3</span> <span class="o">=</span> <span class="kd">function</span> <span class="p">(</span><span class="nx">a</span><span class="p">,</span><span class="nx">b</span><span class="p">,</span><span class="nx">c</span><span class="p">)</span> <span class="p">{</span>
+ <span class="p">...</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>no secret changes to the new property are performed and we can redefine the
+<code class="code docutils literal"><span class="pre">window.example3</span></code> property to anything we want, including a different
+version of the function code!</p>
+<span class="target" id="index-0"></span></div>
+</div>
+
+
+  
+      
+  <li id="relations-prev" class="navLink" title='Previous Section - 5.3 - A Primer on Buffer Objects' data-toggle="tooltip">
+    <a href="buffer_object_primer.html" >
+      <i class='prevNav glyphicon glyphicon-chevron-left'></i>
+    </a>
+  </li>
+  <a class="navLinkBg" id="navLinkBgLeft"  href="buffer_object_primer.html" ></a>
+  
+  <li id="relations-next" class="navLink" title='Next Section - 5.5 - Example 1: One Color per Model' data-toggle="tooltip" >
+    <a href="render_example_01.html" >
+      <i id="relationsNextIcon" class='nextNav glyphicon glyphicon-chevron-right'></i>
+    </a>
+  </li>
+  <a class="navLinkBg navLink" id="navLinkBgRight" href="render_example_01.html" >Next Section - 5.5 - Example 1: One Color per Model</a>
+
+<script type="text/javascript">
+
+  $('#relations-prev').tooltip({'placement':'right', 'selector': '', 'delay': { show: 100, hide: 50}});
+  $('#relations-next').tooltip({'placement':'left', 'selector': '', 'delay': { show: 100, hide: 50}});
+  
+</script>
+  
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <span id='numuserspan'></span> readers online now | <span class='loggedinuser'></span> | <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright &lt;2015, C. Wayne Brown&gt;.
+      Last updated on Mar 04, 2016.<br/>
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.3.1.
+    </p>
+  </div>
+</footer>
+
+<script type="text/javascript" charset="utf-8">
+    $(document).ready(addUserToFooter);
+    $(document).ready(addNavbarLoginLink);
+    $(document).ready(createEditors);
+    $(document).ready(getNumUsers);
+    $(document).ready(getOnlineUsers);
+    $(document).ready(createScratchActivecode());
+    $(document).ready(styleUnittestResults());
+</script>
+
+<script type="text/javascript">
+  // add the video play button overlay image
+  $(".video-play-overlay").each(function() {
+    $(this).css('background-image', "url(\'../_static/play_overlay_icon.png\')")
+    });
+
+  // This function is needed to allow the dropdown search bar to work;
+  // The default behaviour is that the dropdown menu closes when something in
+  // it (like the search bar) is clicked
+  $(function() {
+    // Fix input element click problem
+    $('.dropdown input, .dropdown label').click(function(e) {
+      e.stopPropagation();
+      });
+  });
+
+  // style codelens buttons (doing it here because PyTutor is a submodule owned by someone else
+  $(function() {
+    $(".ExecutionVisualizer").each(function() {
+      $(this).find("#jmpFirstInstr").addClass('btn btn-default');
+      $(this).find("#jmpStepBack").addClass('btn btn-danger');
+      $(this).find("#jmpStepFwd").addClass('btn btn-success');
+      $(this).find("#jmpLastInstr").addClass('btn btn-default');
+      });
+  });
+
+</script>
+
+
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-32029811-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+</script>
+
+
+
+  </body>
+</html>

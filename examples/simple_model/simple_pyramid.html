@@ -1,0 +1,50 @@
+<!doctype html>
+<!-- Example LearnWebGL HTML file, by Wayne Brown, Fall 2015 -->
+<html lang="en-US">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="keywords" content="Learn, WebGL, tutorial, example, render">
+  <meta name="description" content="WebGL tutorials - render a simple model">
+  <meta name="author" content="Wayne Brown">
+  <title>WebGL Example</title>
+  <script src="../../lib/jquery.js"></script>
+  <link rel="stylesheet" href="../../lib/webglcode.css" />
+</head>
+
+<body>
+<p>A simple, manually defined 3D model. You can spin the model with your mouse.</p>
+
+<!--The canvas window for rendering 3D graphics -->
+<canvas id="W1_canvas" class="canvas3D">
+  Please use a browser that supports "canvas"
+</canvas>
+<br>
+
+<!-- An HTML control element that can be used to modify the rendering behavior -->
+<input type="checkbox" id="my_pause" checked> Animate<br>
+
+<!-- Load the JavaScript libraries and data files for the WebGL rendering -->
+<script src="../../lib/learn_webgl.js"></script>
+<script src="../../lib/learn_webgl_console_messages.js"></script>
+<script src="../../lib/learn_webgl_point4.js"></script>
+<script src="../../lib/learn_webgl_vector3.js"></script>
+<script src="../../lib/learn_webgl_matrix.js"></script>
+<script src="./simple_model_01.js"></script>
+<script src="./simple_model_render_01.js"></script>
+<script src="./simple_pyramid_render_01.js"></script>
+<script src="./simple_pyramid_events_01.js"></script>
+
+<!--
+  Create an instance of the learn_webgl class, and start the WebGL program.
+  We do this here to pass the canvas ID into the javascript code.
+-->
+<script>
+  var models = [];
+  var shaders = ["../../lib/shaders/shader01.vert", "../../lib/shaders/shader01.frag"];
+  var controls = ["my_pause"];
+  var my_program = new Learn_webgl("W1_canvas", "SceneSimplePyramidRender", models, shaders, controls);
+</script>
+
+</body>
+</html>
