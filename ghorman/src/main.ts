@@ -1,5 +1,5 @@
 import { FLOAT32_SIZE } from './lib/constants';
-import { compileShader, createProgram, resize } from './lib/utils';
+import { compileShader, createProgram, fetchTextFile, resize } from './lib/utils';
 import './style.css'
 
 
@@ -24,11 +24,27 @@ async function main() {
   const program = createProgram(gl, vertexShader, fragmentShader)!;
 
   // Buffer
-  const vertices = new Float32Array([
-    -0.5, -0.5, 0,
-    0.5, -0.5, 0,
-    0, 0.5, 0
-  ]);
+  const text = await fetchTextFile('data/points.txt');
+  const coords = text.split('\n')
+    .filter(txt => txt.trim())
+    .map(txtCoord => txtCoord
+      .split(' ')
+      .map(s => parseFloat(s))
+    );
+  const points = coords.map(
+    coord => [
+      Math.atan2(coord[1], coord[0]) / Math.PI,
+      coord[2],
+      0
+    ]
+  )
+
+  // const vertices = new Float32Array([
+  //   -0.5, -0.5, 0,
+  //   0.5, -0.5, 0,
+  //   0, 0.5, 0
+  // ]);
+  const vertices = new Float32Array(points.flat());
   const vbo = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
   gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
@@ -42,7 +58,7 @@ async function main() {
     gl.clearColor(0, 0, 0, 1);
     gl.clear(gl.COLOR_BUFFER_BIT);
 
-    gl.drawArrays(gl.POINTS, 0, 3);
+    gl.drawArrays(gl.POINTS, 0, points.length);
     requestAnimationFrame(animate);
   }
   animate();
