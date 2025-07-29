@@ -7,6 +7,7 @@ export class WebGLRenderer {
     this.gl = null;
     this.program = null;
     this.buffer = null;
+    this.lineBuffer = null;
     this.startTime = Date.now();
 
     // Uniform locations
@@ -15,6 +16,7 @@ export class WebGLRenderer {
 
     // Attribute locations
     this.positionLocation = null;
+    this.isWhiteLocation = null;
 
     // Animation parameters
     this.parameters = {
@@ -43,7 +45,7 @@ export class WebGLRenderer {
       this.getLocations();
 
       // Create geometry buffer
-      this.createGeometry();
+      await this.createGeometry();
 
       // Set initial viewport
       this.handleResize(this.canvas.width, this.canvas.height);
@@ -133,29 +135,44 @@ export class WebGLRenderer {
     this.timeLocation = this.gl.getUniformLocation(this.program, 'u_time');
     this.resolutionLocation = this.gl.getUniformLocation(this.program, 'u_resolution');
     this.positionLocation = this.gl.getAttribLocation(this.program, 'a_position');
+    this.isWhiteLocation = this.gl.getAttribLocation(this.program, 'a_isWhite');
 
     if (this.positionLocation === -1) {
       console.warn('Position attribute not found in shader');
+    }
+
+    if (this.isWhiteLocation === -1) {
+      console.warn('isWhite attribute not found in shader');
     }
   }
 
   /**
    * Create geometry buffer (full-screen quad)
    */
-  createGeometry() {
-    // Full-screen quad vertices
-    const vertices = new Float32Array([
-      -1.0, -1.0,  // Bottom left
-      1.0, -1.0,  // Bottom right
-      -1.0, 1.0,  // Top left
-      1.0, -1.0,  // Bottom right
-      1.0, 1.0,  // Top right
-      -1.0, 1.0   // Top left
-    ]);
+  async createGeometry() {
+    const res = await fetch('data/points.txt');
+    const resText = await res.text();
+    const points = resText.split('\n')
+      .filter(text => text.trim())
+      .map(coord => coord.split(' ')
+        .map(f => parseFloat(f)));
+    const projPoints = points.map(coord => ([Math.atan2(coord[1], coord[0]) / Math.PI, coord[2], 0 /* color */]));
 
+    const vertices = new Float32Array(projPoints.flat());
     this.buffer = this.gl.createBuffer();
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.buffer);
     this.gl.bufferData(this.gl.ARRAY_BUFFER, vertices, this.gl.STATIC_DRAW);
+    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, null);
+
+    const line_vertices = new Float32Array([
+      // x, y, isWhite
+      -1, 0, 1,
+      1, 0, 1
+    ])
+    this.lineBuffer = this.gl.createBuffer();
+    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.lineBuffer);
+    this.gl.bufferData(this.gl.ARRAY_BUFFER, line_vertices, this.gl.STATIC_DRAW);
+    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, null);
   }
 
   /**
@@ -212,15 +229,43 @@ export class WebGLRenderer {
 
     if (this.positionLocation !== -1) {
       this.gl.enableVertexAttribArray(this.positionLocation);
-      this.gl.vertexAttribPointer(this.positionLocation, 2, this.gl.FLOAT, false, 0, 0);
+      this.gl.vertexAttribPointer(this.positionLocation, 2, this.gl.FLOAT, false, 4 * 3 /* 3 floats, each 4 bytes */, 0);
     }
 
-    // Draw the quad
-    this.gl.drawArrays(this.gl.TRIANGLES, 0, 6);
+    if (this.isWhiteLocation !== -1) {
+      this.gl.enableVertexAttribArray(this.isWhiteLocation);
+      this.gl.vertexAttribPointer(this.isWhiteLocation, 1, this.gl.FLOAT, false, 0, 0);
+    }
+
+    // Draw the points
+    this.gl.drawArrays(this.gl.POINTS, 0, 100_000);
 
     // Disable vertex attribute array
     if (this.positionLocation !== -1) {
       this.gl.disableVertexAttribArray(this.positionLocation);
+      this.gl.disableVertexAttribArray(this.isWhiteLocation);
+    }
+
+    /* --- line --- */
+    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.lineBuffer);
+
+    if (this.positionLocation !== -1) {
+      this.gl.enableVertexAttribArray(this.positionLocation);
+      this.gl.vertexAttribPointer(this.positionLocation, 2, this.gl.FLOAT, false, 4 * 3 /* 3 floats, each 4 bytes */, 0);
+    }
+
+    if (this.isWhiteLocation !== -1) {
+      this.gl.enableVertexAttribArray(this.isWhiteLocation);
+      this.gl.vertexAttribPointer(this.isWhiteLocation, 1, this.gl.FLOAT, false, 0, 0);
+    }
+
+    // Draw the points
+    this.gl.drawArrays(this.gl.LINES, 0, 2);
+
+    // Disable vertex attribute array
+    if (this.positionLocation !== -1) {
+      this.gl.disableVertexAttribArray(this.positionLocation);
+      this.gl.disableVertexAttribArray(this.isWhiteLocation);
     }
   }
 
@@ -248,6 +293,11 @@ export class WebGLRenderer {
       if (this.buffer) {
         this.gl.deleteBuffer(this.buffer);
         this.buffer = null;
+      }
+
+      if (this.lineBuffer) {
+        this.gl.deleteBuffer(this.lineBuffer);
+        this.lineBuffer = null;
       }
 
       if (this.program) {

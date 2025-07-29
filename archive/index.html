@@ -24,10 +24,15 @@
 
     <!-- Vertex Shader -->
     <script id="vertex-shader" type="x-shader/x-vertex">
-        attribute vec3 a_position;
+        attribute vec2 a_position;
+        attribute float a_isWhite;
+
+        varying float v_isWhite;
         
         void main() {
-            gl_Position = vec4(a_position, 1.0);
+            gl_Position = vec4(a_position, 1.0, 1.0);
+            gl_PointSize = 2.0;
+            v_isWhite = a_isWhite;
         }
     </script>
 
@@ -39,15 +44,25 @@
         
         uniform float u_time;
         uniform vec2 u_resolution;
+
+        varying float v_isWhite;
+
+        void makeCircle() {
+          vec2 center = vec2(0.5, 0.5);
+          float dist = distance(gl_PointCoord, center);
+
+          // Create smooth circle with anti-aliasing
+          float alpha = 1.0 - smoothstep(0.4, 0.5, dist);
+
+          if (alpha < 0.01) {
+            discard;
+          }
+        }
         
         void main() {
-            vec2 position = -1.0 + 2.0 * gl_FragCoord.xy / u_resolution.xy;
-            
-            float red = abs(sin(position.x * position.y + u_time / 5.0));
-            float green = abs(sin(position.x * position.y + u_time / 4.0));
-            float blue = abs(sin(position.x * position.y + u_time / 3.0));
-            
-            gl_FragColor = vec4(red, green, blue, 1.0);
+            // makeCircle();
+            float isWhite = step(0.5, v_isWhite);
+            gl_FragColor = vec4(mix(vec3(1,0,0), vec3(1,1,1), isWhite), 1.0);
         }
     </script>
 

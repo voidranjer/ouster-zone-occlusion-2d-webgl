@@ -48,7 +48,7 @@ def generate_random_3d_point_in_cylinder(
 
 def main():
     """Generate 5000 random 3D coordinates and save to output.txt"""
-    num_samples = 5000
+    num_samples = 100000
     output_file = "output.txt"
 
     print(f"Generating {num_samples} random 3D coordinates...")
@@ -59,7 +59,7 @@ def main():
     # Generate random points
     points = []
     for i in range(num_samples):
-        point = generate_random_3d_point_in_cylinder()
+        point = generate_random_3d_point_in_cylinder(min_z=-1.0)
         points.append(point)
 
         # Progress indicator
