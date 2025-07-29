@@ -16,13 +16,10 @@ async function main() {
     resize(gl, canvas);
   });
 
-  // Shaders
-  const vertexShader = await compileShader(gl, 'shaders/points.vert', gl.VERTEX_SHADER);
-  const fragmentShader = await compileShader(gl, 'shaders/points.frag', gl.FRAGMENT_SHADER);
-
-  // Program
-  const program = createProgram(gl, vertexShader, fragmentShader)!;
-
+  // Points
+  const pointsVertexShader = await compileShader(gl, 'shaders/points.vert', gl.VERTEX_SHADER);
+  const pointsFragmentShader = await compileShader(gl, 'shaders/points.frag', gl.FRAGMENT_SHADER);
+  const pointsProgram = createProgram(gl, pointsVertexShader, pointsFragmentShader)!;
   // Buffer
   const text = await fetchTextFile('data/points.txt');
   const coords = text.split('\n')
@@ -39,18 +36,37 @@ async function main() {
     ]
   )
 
+  const pointsVao = gl.createVertexArray();
+  const pointsVbo = gl.createBuffer();
+  gl.bindVertexArray(pointsVao);
   // const vertices = new Float32Array([
   //   -0.5, -0.5, 0,
   //   0.5, -0.5, 0,
   //   0, 0.5, 0
   // ]);
-  const vertices = new Float32Array(points.flat());
-  const vbo = gl.createBuffer();
-  gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
-  gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
+  const pointsVertices = new Float32Array(points.flat());
+  gl.bindBuffer(gl.ARRAY_BUFFER, pointsVbo);
+  gl.bufferData(gl.ARRAY_BUFFER, pointsVertices, gl.STATIC_DRAW);
   gl.vertexAttribPointer(0, 3, gl.FLOAT, false, FLOAT32_SIZE * 3, 0);
   gl.enableVertexAttribArray(0);
-  gl.useProgram(program);
+
+  // Lines
+  const linesVertexShader = await compileShader(gl, 'shaders/lines.vert', gl.VERTEX_SHADER);
+  const linesFragmentShader = await compileShader(gl, 'shaders/lines.frag', gl.FRAGMENT_SHADER);
+  const linesProgram = createProgram(gl, linesVertexShader, linesFragmentShader)!;
+  // Buffer
+  const lines = [
+    [-1, 0, -1],
+    [1, 0, -1]
+  ]
+  const linesVertices = new Float32Array(lines.flat());
+  const linesVao = gl.createVertexArray();
+  const linesVbo = gl.createBuffer();
+  gl.bindVertexArray(linesVao);
+  gl.bindBuffer(gl.ARRAY_BUFFER, linesVbo);
+  gl.bufferData(gl.ARRAY_BUFFER, linesVertices, gl.STATIC_DRAW);
+  gl.vertexAttribPointer(0, 3, gl.FLOAT, false, FLOAT32_SIZE * 3, 0);
+  gl.enableVertexAttribArray(0);
 
 
   function animate() {
@@ -58,16 +74,24 @@ async function main() {
     gl.clearColor(0, 0, 0, 1);
     gl.clear(gl.COLOR_BUFFER_BIT);
 
+    gl.useProgram(pointsProgram);
+    gl.bindVertexArray(pointsVao);
     gl.drawArrays(gl.POINTS, 0, points.length);
+
+    gl.useProgram(linesProgram);
+    gl.bindVertexArray(linesVao);
+    gl.drawArrays(gl.LINES, 0, lines.length);
+
     requestAnimationFrame(animate);
   }
   animate();
 
   // Cleanup
-  window.onbeforeunload = () => {
-    gl.deleteProgram(program);
-    gl.deleteBuffer(vbo);
-  };
+  // TODO: incomplete. grep 'create' in the code - clean these up
+  // window.onbeforeunload = () => {
+  //   gl.deleteProgram(program);
+  //   gl.deleteBuffer(pointsVbo);
+  // };
 }
 
 main();
