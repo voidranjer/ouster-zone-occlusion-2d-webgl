@@ -1,5 +1,5 @@
 import { FLOAT32_SIZE } from './lib/constants';
-import { compileShader, createProgram, fetchTextFile, resize } from './lib/utils';
+import { compileShader, createProgram, fetchJsonFile, fetchTextFile, glNormalize, resize } from './lib/utils';
 import './style.css'
 
 
@@ -24,20 +24,37 @@ async function main() {
   const pointsFragmentShader = await compileShader(gl, 'shaders/points.frag', gl.FRAGMENT_SHADER);
   const pointsProgram = createProgram(gl, pointsVertexShader, pointsFragmentShader)!;
   // Buffer
-  const text = await fetchTextFile('data/points.txt');
-  const coords = text.split('\n')
-    .filter(txt => txt.trim())
-    .map(txtCoord => txtCoord
-      .split(' ')
-      .map(s => parseFloat(s))
-    );
-  const points = coords.map(
-    coord => [
-      Math.atan2(coord[1], coord[0]) / Math.PI,
-      coord[2],
-      0
-    ]
-  )
+  // const text = await fetchTextFile('data/points.txt');
+  // const coords = text.split('\n')
+  //   .filter(txt => txt.trim())
+  //   .map(txtCoord => txtCoord
+  //     .split(' ')
+  //     .map(s => parseFloat(s))
+  //   );
+  // const points = coords.map(
+  //   coord => [
+  //     Math.atan2(coord[1], coord[0]) / Math.PI,
+  //     coord[2],
+  //     0
+  //   ]
+  // )
+
+  const payload: number[][] = await fetchJsonFile('data/points.json');
+  const MAX_ROWS = 128;
+  const MAX_COLS = 227;
+  const MAX_RANGE = 20000; // 200 meters
+
+  const points = payload.map((row, rowIdx) => {
+    const yCoord = -1 * glNormalize(rowIdx, MAX_ROWS);
+    return row
+      .map((measurement, colIdx) => {
+        const xCoord = glNormalize(colIdx, MAX_COLS);
+        // zero values (infinite distance). TODO: experiment with 'discard' on the Fragment Shader
+        const zCoord = measurement === 0 ? 1 : glNormalize(measurement, MAX_RANGE);
+        return [xCoord, yCoord, zCoord];
+      });
+  }).flat();
+
 
   const pointsVao = gl.createVertexArray();
   const pointsVbo = gl.createBuffer();
@@ -59,10 +76,10 @@ async function main() {
   const linesProgram = createProgram(gl, linesVertexShader, linesFragmentShader)!;
   // Buffer
   const lines = [
-    [1, -0.1, 0.5], // bottom right
-    [1, 0.1, 0.5], // top right
-    [-1, 0.1, 0.5], // top left
-    [-1, -0.1, 0.5] // bottom left
+    [1, -0.1, 1], // bottom right
+    [1, 0.1, 1], // top right
+    [-1, 0.1, -1], // top left
+    [-1, -0.1, -1] // bottom left
   ]
   const linesVertices = new Float32Array(lines.flat());
   const linesVao = gl.createVertexArray();

@@ -10,6 +10,12 @@ export async function fetchTextFile(filepath: string) {
   return text;
 }
 
+export async function fetchJsonFile(filepath: string) {
+  const res = await fetch(filepath);
+  const payload = await res.json();
+  return payload;
+}
+
 export function checkShaderStatus(gl: WebGL2RenderingContext, shader: WebGLShader) {
   if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
     const error = gl.getShaderInfoLog(shader);
@@ -47,4 +53,6 @@ export function createProgram(gl: WebGL2RenderingContext, vertexShader: WebGLSha
   return program;
 }
 
-
+export function glNormalize(val: number, max: number) {
+  return 2 * (val / max) - 1;
+}
