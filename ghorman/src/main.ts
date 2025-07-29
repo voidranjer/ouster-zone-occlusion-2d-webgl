@@ -10,6 +10,9 @@ async function main() {
   const canvas = document.getElementById('webgl-canvas')! as HTMLCanvasElement;
   const gl = canvas.getContext('webgl2')!;
 
+  // Global GL settings
+  gl.enable(gl.DEPTH_TEST);
+
   // Resize
   resize(gl, canvas);
   window.addEventListener('resize', () => {
@@ -56,8 +59,10 @@ async function main() {
   const linesProgram = createProgram(gl, linesVertexShader, linesFragmentShader)!;
   // Buffer
   const lines = [
-    [-1, 0, -1],
-    [1, 0, -1]
+    [1, -0.1, 0.5], // bottom right
+    [1, 0.1, 0.5], // top right
+    [-1, 0.1, 0.5], // top left
+    [-1, -0.1, 0.5] // bottom left
   ]
   const linesVertices = new Float32Array(lines.flat());
   const linesVao = gl.createVertexArray();
@@ -72,7 +77,7 @@ async function main() {
   function animate() {
     // Clear background
     gl.clearColor(0, 0, 0, 1);
-    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
     gl.useProgram(pointsProgram);
     gl.bindVertexArray(pointsVao);
@@ -80,7 +85,7 @@ async function main() {
 
     gl.useProgram(linesProgram);
     gl.bindVertexArray(linesVao);
-    gl.drawArrays(gl.LINES, 0, lines.length);
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, lines.length);
 
     requestAnimationFrame(animate);
   }
