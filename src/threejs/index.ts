@@ -3,7 +3,8 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { fetchJsonFile } from '../lib/utils';
 import { onMouseClick } from './eventHandlers';
 
-const PLANE_Y = 0;
+const PLANE_Y = -2.0;
+const POINTS_SIZE = 0.05;
 
 // Three.js essentials
 export const scene = new THREE.Scene();
@@ -24,6 +25,7 @@ export let plane: THREE.Mesh;
 
 // State
 export const vertices: THREE.Vector3[] = [];
+export const lines: THREE.Line[] = [];
 
 /* --- FUNCTIONS ---*/
 
@@ -55,7 +57,7 @@ export async function setup() {
   const material = new THREE.PointsMaterial({
     // color: new THREE.Color(0, 1, 0),
     vertexColors: true,
-    size: 0.05,
+    size: POINTS_SIZE,
   });
   const points = new THREE.Points(geometry, material);
   scene.add(points);
