@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { canvas, scene, renderer, camera, controls, mouse, raycaster, plane } from './index.ts';
+import { canvas, scene, renderer, camera, controls, mouse, raycaster, plane, vertices } from './index.ts';
 
 export function resize() {
   const width = canvas.clientWidth;
@@ -13,7 +13,8 @@ export function resize() {
 }
 
 export function onMouseClick(event: MouseEvent) {
-  if (!localStorage.getItem('isInEditMode')) return
+  const mode = localStorage.getItem('mode');
+  if (mode === null || mode !== 'edit') return;
 
   // Calculate mouse position in normalized device coordinates (-1 to +1)
   const rect = renderer.domElement.getBoundingClientRect();
@@ -28,16 +29,20 @@ export function onMouseClick(event: MouseEvent) {
 
   if (intersects.length > 0) {
     const point = intersects[0].point;
+    vertices.push(point);
+
+    // webgl has weird coordinate system
+    console.log(Math.atan2(-point.z, point.x) / Math.PI);
 
     // Create a visible box at the clicked point
-    const boxGeometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
+    const boxSize = 0.5;
+    const boxGeometry = new THREE.BoxGeometry(boxSize, boxSize, boxSize);
     const boxMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
     const box = new THREE.Mesh(boxGeometry, boxMaterial);
-
     box.position.copy(point);
     // Optional: raise the box so it sits on the plane (since box center is middle)
-    box.position.y += 0.05;
-
+    box.position.y += boxSize;
     scene.add(box);
   }
 }
+

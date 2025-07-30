@@ -26,19 +26,22 @@ async function main() {
   const pointsFragmentShader = await compileShader(gl, 'shaders/points.frag', gl.FRAGMENT_SHADER);
   const pointsProgram = createProgram(gl, pointsVertexShader, pointsFragmentShader)!;
 
-  const payload: number[][] = await fetchJsonFile('data/pixels.json');
+  const range_payload: number[][] = await fetchJsonFile('data/range.json');
+  const reflectivity_payload: number[][] = await fetchJsonFile('data/reflectivity.json');
   const MAX_ROWS = 128;
   const MAX_COLS = 1024;
   const MAX_RANGE = 20000; // 200 meters
+  const MAX_REFLECTIVITY = 255;
 
-  const points = payload.map((row, rowIdx) => {
+  const points = range_payload.map((row, rowIdx) => {
     const yCoord = -1 * glNormalize(rowIdx, MAX_ROWS);
     return row
       .map((measurement, colIdx) => {
         const xCoord = glNormalize(colIdx, MAX_COLS);
         // cull zero values (infinite distance)
         const zCoord = (measurement === 0) ? -2 : glNormalize(measurement, MAX_RANGE);
-        return [xCoord, yCoord, zCoord];
+        const reflectivity_measurement = glNormalize(MAX_REFLECTIVITY - reflectivity_payload[rowIdx][colIdx], MAX_REFLECTIVITY);
+        return [xCoord, yCoord, zCoord, reflectivity_measurement];
       });
   }).flat();
 
@@ -54,8 +57,10 @@ async function main() {
   const pointsVertices = new Float32Array(points.flat());
   gl.bindBuffer(gl.ARRAY_BUFFER, pointsVbo);
   gl.bufferData(gl.ARRAY_BUFFER, pointsVertices, gl.STATIC_DRAW);
-  gl.vertexAttribPointer(0, 3, gl.FLOAT, false, FLOAT32_SIZE * 3, 0);
+  gl.vertexAttribPointer(0, 3, gl.FLOAT, false, FLOAT32_SIZE * 4, 0);
+  gl.vertexAttribPointer(1, 1, gl.FLOAT, false, FLOAT32_SIZE * 4, FLOAT32_SIZE * 3);
   gl.enableVertexAttribArray(0);
+  gl.enableVertexAttribArray(1);
 
   /* --- Lines --- */
   const linesVertexShader = await compileShader(gl, 'shaders/lines.vert', gl.VERTEX_SHADER);

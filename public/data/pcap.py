@@ -3,6 +3,24 @@ import numpy as np
 from ouster.sdk import open_source
 from ouster.sdk.client import LidarScan, ChanField, ScanSource, destagger, XYZLut
 
+
+def parse2D(payload: np.ndarray, name: str):
+    # Compute and print min/max
+    print(f"\n=== 2D Statistics ({name}) ===")
+    min_val = np.min(payload)
+    max_val = np.max(payload)
+    print(f"Min range (mm): {min_val}")
+    print(f"Max range (mm): {max_val}")
+
+    # 128 (vertical channels) x 1024 (horizontal steps)
+    print(f"Shape: {payload.shape}")
+
+    # Export to JSON
+    payload_list = payload.tolist()
+    with open(f"{name}.json", "w") as outfile:
+        json.dump(payload_list, outfile)
+
+
 pcap_path = "OS-1-128_v3.0.1_1024x10_20230216_142857-000.pcap"
 metadata_path = "OS-1-128_v3.0.1_1024x10_20230216_142857.json"
 
@@ -17,28 +35,11 @@ scan: LidarScan = frame[sensor_idx]
 
 range_field = scan.field(ChanField.RANGE)
 range_img = destagger(sensor_info, range_field)
-# payload = range_img[:, 0:227]
-payload = range_img
+parse2D(range_img, "range")
 
-# Export raw range values
-payload_list = payload.tolist()
-with open("pixels.json", "w") as outfile:
-    json.dump(payload_list, outfile)
-
-# Compute and print min/max in mm
-print("\n=== Point Cloud Statistics ===")
-min_mm = np.min(payload)
-max_mm = np.max(payload)
-print(f"\nMin range (mm): {min_mm}")
-print(f"Max range (mm): {max_mm}")
-
-# Convert to meters for convenience
-payload_m = payload.astype(np.float32) / 1000.0
-print(f"Min range (m): {payload_m.min():.3f}")
-print(f"Max range (m): {payload_m.max():.3f}")
-
-# 128 (vertical channels) x 1024 (horizontal steps)
-print(f"Shape: {payload.shape}")
+reflectivity_field = scan.field(ChanField.REFLECTIVITY)
+reflectivity_img = destagger(sensor_info, reflectivity_field)
+parse2D(reflectivity_img, "reflectivity")
 
 # -- viz -- #
 
@@ -50,8 +51,6 @@ print(f"Shape: {payload.shape}")
 
 xyzlut = XYZLut(sensor_info)
 xyz = xyzlut(scan)
-
-import numpy as np
 
 [x, y, z] = [c.flatten() for c in np.dsplit(xyz, 3)]
 
@@ -65,9 +64,28 @@ import numpy as np
 # z = z[mask]
 
 xyz_webgl = np.stack((x, z, -y), axis=1)
+reflectivity_1d = destagger(sensor_info, scan.field(ChanField.REFLECTIVITY)).flatten()
+reflectivity_normalized = np.minimum(
+    reflectivity_1d / 255.0, 1.0
+)  # scale by 1.01, cap at 1.0
+reflectivity_webgl_rgb = np.stack(
+    (
+        reflectivity_normalized,
+        1 - np.ones_like(reflectivity_normalized),
+        np.ones_like(reflectivity_normalized),
+    ),
+    axis=1,
+)
 
 with open("points.json", "w") as outfile:
     json.dump(xyz_webgl.tolist(), outfile)
+
+with open("points_reflectivity.json", "w") as outfile:
+    json.dump(reflectivity_webgl_rgb.tolist(), outfile)
+
+print("\n=== Point Cloud Statistics ===")
+print(f"Points shape: {xyz_webgl.shape}")
+print(f"Reflectivity shape: {reflectivity_webgl_rgb.shape}")
 
 # ax = plt.axes(projection="3d")
 # r = 10

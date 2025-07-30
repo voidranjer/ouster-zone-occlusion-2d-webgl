@@ -5,6 +5,7 @@ import { onMouseClick } from './eventHandlers';
 
 const PLANE_Y = 0;
 
+// Three.js essentials
 export const scene = new THREE.Scene();
 export const camera = new THREE.PerspectiveCamera(
   75,
@@ -15,10 +16,14 @@ export const camera = new THREE.PerspectiveCamera(
 export const canvas = document.getElementById('threejs-canvas')! as HTMLCanvasElement;
 export const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
 
+// Singletons
 export let controls: OrbitControls;
 export let raycaster = new THREE.Raycaster();
 export let mouse = new THREE.Vector2();
 export let plane: THREE.Mesh;
+
+// State
+export const vertices: THREE.Vector3[] = [];
 
 /* --- FUNCTIONS ---*/
 
@@ -40,12 +45,16 @@ export async function setup() {
   controls.maxPolarAngle = Math.PI / 2;
 
   // Add point cloud
-  const pointsData: number[][] = await fetchJsonFile('data/points.json');
   const geometry = new THREE.BufferGeometry();
+  const pointsData: number[][] = await fetchJsonFile('data/points.json');
   const positions = new Float32Array(pointsData.flat());
   geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  const reflectivityData: number[][] = await fetchJsonFile('data/points_reflectivity.json');
+  const colors = new Float32Array(reflectivityData.flat());
+  geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
   const material = new THREE.PointsMaterial({
-    color: 0x00ff00,
+    // color: new THREE.Color(0, 1, 0),
+    vertexColors: true,
     size: 0.05,
   });
   const points = new THREE.Points(geometry, material);
