@@ -1,8 +1,7 @@
 import { FLOAT32_SIZE } from './lib/constants';
+import { render, setup as threejsSetup, resize as threejsResize } from './lib/threejs';
 import { compileShader, createProgram, fetchJsonFile, fetchTextFile, glNormalize, resize } from './lib/utils';
 import './style.css'
-
-
 
 
 async function main() {
@@ -15,33 +14,20 @@ async function main() {
 
   // Resize
   resize(gl, canvas);
+  threejsResize();
   window.addEventListener('resize', () => {
     resize(gl, canvas);
+    threejsResize();
   });
 
-  // Points
+  /* --- Points --- */
   const pointsVertexShader = await compileShader(gl, 'shaders/points.vert', gl.VERTEX_SHADER);
   const pointsFragmentShader = await compileShader(gl, 'shaders/points.frag', gl.FRAGMENT_SHADER);
   const pointsProgram = createProgram(gl, pointsVertexShader, pointsFragmentShader)!;
-  // Buffer
-  // const text = await fetchTextFile('data/points.txt');
-  // const coords = text.split('\n')
-  //   .filter(txt => txt.trim())
-  //   .map(txtCoord => txtCoord
-  //     .split(' ')
-  //     .map(s => parseFloat(s))
-  //   );
-  // const points = coords.map(
-  //   coord => [
-  //     Math.atan2(coord[1], coord[0]) / Math.PI,
-  //     coord[2],
-  //     0
-  //   ]
-  // )
 
-  const payload: number[][] = await fetchJsonFile('data/points.json');
+  const payload: number[][] = await fetchJsonFile('data/pixels.json');
   const MAX_ROWS = 128;
-  const MAX_COLS = 227;
+  const MAX_COLS = 1024;
   const MAX_RANGE = 20000; // 200 meters
 
   const points = payload.map((row, rowIdx) => {
@@ -49,8 +35,8 @@ async function main() {
     return row
       .map((measurement, colIdx) => {
         const xCoord = glNormalize(colIdx, MAX_COLS);
-        // zero values (infinite distance). TODO: experiment with 'discard' on the Fragment Shader
-        const zCoord = measurement === 0 ? 1 : glNormalize(measurement, MAX_RANGE);
+        // cull zero values (infinite distance)
+        const zCoord = (measurement === 0) ? -2 : glNormalize(measurement, MAX_RANGE);
         return [xCoord, yCoord, zCoord];
       });
   }).flat();
@@ -70,7 +56,7 @@ async function main() {
   gl.vertexAttribPointer(0, 3, gl.FLOAT, false, FLOAT32_SIZE * 3, 0);
   gl.enableVertexAttribArray(0);
 
-  // Lines
+  /* --- Lines --- */
   const linesVertexShader = await compileShader(gl, 'shaders/lines.vert', gl.VERTEX_SHADER);
   const linesFragmentShader = await compileShader(gl, 'shaders/lines.frag', gl.FRAGMENT_SHADER);
   const linesProgram = createProgram(gl, linesVertexShader, linesFragmentShader)!;
@@ -78,8 +64,8 @@ async function main() {
   const lines = [
     [1, -0.1, 1], // bottom right
     [1, 0.1, 1], // top right
-    [-1, 0.1, -1], // top left
-    [-1, -0.1, -1] // bottom left
+    [-1, -0.1, -1], // bottom left
+    [-1, 0.1, -1] // top left
   ]
   const linesVertices = new Float32Array(lines.flat());
   const linesVao = gl.createVertexArray();
@@ -104,6 +90,8 @@ async function main() {
     gl.bindVertexArray(linesVao);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, lines.length);
 
+    render();
+
     requestAnimationFrame(animate);
   }
   animate();
@@ -116,4 +104,5 @@ async function main() {
   // };
 }
 
+threejsSetup();
 main();

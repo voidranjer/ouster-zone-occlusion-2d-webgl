@@ -3,9 +3,9 @@
 precision highp float;
 #endif
 
-in float v_depth;
+in vec3 v_color;
 out vec4 FragColor;
 
 void main() {
-  FragColor = vec4(v_depth, v_depth, v_depth, 1.0);
+  FragColor = vec4(v_color, 1.0);
 }
