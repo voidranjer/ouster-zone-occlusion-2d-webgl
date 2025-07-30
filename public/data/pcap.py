@@ -42,17 +42,21 @@ def parse2D(
     with open(f"{name}.json", "w") as outfile:
         json.dump(normalized_list, outfile)
 
+    return normalized
+
 
 pcap_path = "OS-1-128_v3.0.1_1024x10_20230216_142857-000.pcap"
 metadata_path = "OS-1-128_v3.0.1_1024x10_20230216_142857.json"
 
 sensor_idx = 0
+frame_number = 10
 
 source: ScanSource = open_source(
-    pcap_path, meta=[metadata_path], sensor_idx=sensor_idx, collate=False
+    pcap_path, meta=[metadata_path], sensor_idx=sensor_idx, collate=False, index=True
 )
 sensor_info = source.sensor_info[sensor_idx]
-frame = next(iter(source))
+frame = source[frame_number]
+# frame = next(iter(source))
 scan: LidarScan = frame[sensor_idx]
 
 range_field = scan.field(ChanField.RANGE)
@@ -60,8 +64,10 @@ range_img = destagger(sensor_info, range_field)
 parse2D(range_img, "range", 0, 200_000, -1, 1)  # 200 meters for OS-1-128
 
 reflectivity_field = scan.field(ChanField.REFLECTIVITY)
+# reflectivity_field = scan.field(ChanField.NEAR_IR)
 reflectivity_img = destagger(sensor_info, reflectivity_field)
-parse2D(reflectivity_img, "reflectivity", 0, 255, 0, 1)
+# reflectivity_normalized = parse2D(reflectivity_img, "reflectivity", 0, 65535, 0, 1)
+reflectivity_normalized = parse2D(reflectivity_img, "reflectivity", 0, 255, 0, 1)
 
 # -- viz -- #
 
@@ -85,27 +91,31 @@ xyz = xyzlut(scan)
 # y = y[mask]
 # z = z[mask]
 
+# Range
 xyz_webgl = np.stack((x, z, -y), axis=1)
-reflectivity_1d = reflectivity_img.flatten()
-reflectivity_normalized = np.minimum(
-    reflectivity_1d / 255.0, 1.0
-)  # scale by 1.01, cap at 1.0
-reflectivity_webgl_rgb = np.stack(
-    (
-        reflectivity_normalized,
-        1 - np.ones_like(reflectivity_normalized),
-        np.ones_like(reflectivity_normalized),
-    ),
-    axis=1,
-)
-
 with open("points.json", "w") as outfile:
     json.dump(xyz_webgl.tolist(), outfile)
 
+# Reflectivity
+reflectivity_1d = reflectivity_normalized.flatten()
+reflectivity_webgl_rgb = np.stack(
+    (
+        reflectivity_1d,
+        1 - np.ones_like(reflectivity_1d),
+        np.ones_like(reflectivity_1d),
+    ),
+    axis=1,
+)
 with open("points_reflectivity.json", "w") as outfile:
     json.dump(reflectivity_webgl_rgb.tolist(), outfile)
 
+# --- Stats --- #
+
 print("\n=== Point Cloud Statistics ===")
+print(f"X: [{np.min(x)}, {np.max(x)}]")
+print(f"Y: [{np.min(y)}, {np.max(y)}]")
+print(f"Z: [{np.min(z)}, {np.max(z)}]")
+print("-----")
 print(f"Points shape: {xyz_webgl.shape}")
 print(f"Reflectivity shape: {reflectivity_webgl_rgb.shape}")
 

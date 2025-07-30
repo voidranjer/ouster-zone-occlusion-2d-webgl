@@ -1,9 +1,8 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { fetchJsonFile } from '../lib/utils';
-import { onMouseClick } from './eventHandlers';
+import { onMouseClick, PLANE_Y } from './eventHandlers';
 
-const PLANE_Y = -2.0;
 const POINTS_SIZE = 0.05;
 
 // Three.js essentials
@@ -25,7 +24,7 @@ export let plane: THREE.Mesh;
 
 // State
 export const zoneVertices: THREE.Vector3[] = [];
-export const normalizedZoneVertices: number[][] = [];
+export const xzVertices: number[][] = [];
 export const zoneLines: THREE.Line[] = [];
 
 /* --- FUNCTIONS ---*/
@@ -38,7 +37,7 @@ export function render() {
 
 export async function setup() {
   renderer.setPixelRatio(window.devicePixelRatio); // for retina displays
-  camera.position.set(0, 20, 20);
+  camera.position.set(0, 30, 0);
 
   // Orbit controls
   controls = new OrbitControls(camera, renderer.domElement);

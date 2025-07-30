@@ -1,7 +1,8 @@
 import * as THREE from 'three';
-import { zoneLines, canvas, scene, renderer, camera, controls, mouse, raycaster, plane, zoneVertices, normalizedZoneVertices } from './index.ts';
+import { zoneLines, canvas, scene, renderer, camera, controls, mouse, raycaster, plane, zoneVertices, xzVertices } from './index.ts';
 import { createLine } from "./utils"
 
+export const PLANE_Y = -1.0;
 const MAX_RANGE = 200; // 200m for OS-1-128
 
 export function resize() {
@@ -34,12 +35,12 @@ export function onMouseClick(event: MouseEvent) {
   zoneVertices.push(point);
 
   const normalizedX = -1 * Math.atan2(-point.z, point.x) / Math.PI;
-  const normalizedY = 0;
-  const normalizedZ = point.distanceTo(new THREE.Vector3(0, 0, 0)) / MAX_RANGE;
-  normalizedZoneVertices.push([normalizedX, normalizedY, normalizedZ]);
+  // IMPORTANT NOTE: distanceTo(0,0,0) MUST MATCH VERTICLE LEVEL WITH RAYCAST PLANE
+  const normalizedZ = 2 * ((point.distanceTo((new THREE.Vector3(0, PLANE_Y, 0)))) / MAX_RANGE) - 1;
+  xzVertices.push([normalizedX, normalizedZ]);
 
   // Add the box
-  const boxSize = 0.5;
+  const boxSize = 0.2;
   const boxGeometry = new THREE.BoxGeometry(boxSize, boxSize, boxSize);
   const boxMaterial = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
   const box = new THREE.Mesh(boxGeometry, boxMaterial);
@@ -61,7 +62,7 @@ export function onMouseClick(event: MouseEvent) {
     zoneLines.push(line);
 
     // Set these points into localStorage
-    localStorage.setItem('zoneVertices', JSON.stringify(normalizedZoneVertices));
+    localStorage.setItem('xzVertices', JSON.stringify(xzVertices));
   }
 }
 
