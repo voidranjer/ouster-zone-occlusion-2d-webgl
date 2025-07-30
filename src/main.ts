@@ -4,6 +4,8 @@ import { resize as threejsResize } from './threejs/eventHandlers';
 import { compileShader, createProgram, fetchJsonFile, fetchTextFile, glNormalize, resize } from './lib/utils';
 import './style.css'
 
+export const MAX_ROWS = 128;
+export const MAX_COLS = 1024;
 
 async function main() {
   // Get canvas and webgl context
@@ -28,10 +30,6 @@ async function main() {
 
   const range_payload: number[][] = await fetchJsonFile('data/range.json');
   const reflectivity_payload: number[][] = await fetchJsonFile('data/reflectivity.json');
-  const MAX_ROWS = 128;
-  const MAX_COLS = 1024;
-  const MAX_RANGE = 20000; // 200 meters
-  const MAX_REFLECTIVITY = 255;
 
   const points = range_payload.map((row, rowIdx) => {
     const yCoord = -1 * glNormalize(rowIdx, MAX_ROWS);
@@ -39,8 +37,8 @@ async function main() {
       .map((measurement, colIdx) => {
         const xCoord = glNormalize(colIdx, MAX_COLS);
         // cull zero values (infinite distance)
-        const zCoord = (measurement === 0) ? -2 : glNormalize(measurement, MAX_RANGE);
-        const reflectivity_measurement = glNormalize(MAX_REFLECTIVITY - reflectivity_payload[rowIdx][colIdx], MAX_REFLECTIVITY);
+        const zCoord = (measurement === 0) ? -2 : measurement;
+        const reflectivity_measurement = reflectivity_payload[rowIdx][colIdx];
         return [xCoord, yCoord, zCoord, reflectivity_measurement];
       });
   }).flat();
