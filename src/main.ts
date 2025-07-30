@@ -1,5 +1,6 @@
 import { FLOAT32_SIZE } from './lib/constants';
-import { render, setup as threejsSetup, resize as threejsResize } from './lib/threejs';
+import { render, setup as threejsSetup, } from './threejs';
+import { resize as threejsResize } from './threejs/eventHandlers';
 import { compileShader, createProgram, fetchJsonFile, fetchTextFile, glNormalize, resize } from './lib/utils';
 import './style.css'
 
