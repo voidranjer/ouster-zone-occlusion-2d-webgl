@@ -24,8 +24,9 @@ export let mouse = new THREE.Vector2();
 export let plane: THREE.Mesh;
 
 // State
-export const vertices: THREE.Vector3[] = [];
-export const lines: THREE.Line[] = [];
+export const zoneVertices: THREE.Vector3[] = [];
+export const normalizedZoneVertices: number[][] = [];
+export const zoneLines: THREE.Line[] = [];
 
 /* --- FUNCTIONS ---*/
 
