@@ -54,50 +54,49 @@ async function main() {
   gl.enableVertexAttribArray(1);
 
   /* --- Zone --- */
-  // const zoneVertexShader = await compileShader(gl, 'shaders/zone.vert', gl.VERTEX_SHADER);
-  // const zoneFragmentShader = await compileShader(gl, 'shaders/zone.frag', gl.FRAGMENT_SHADER);
-  // const zoneProgram = createProgram(gl, zoneVertexShader, zoneFragmentShader)!;
-  //
-  // const xzVertices = JSON.parse(localStorage.getItem('xzVertices') ?? '[]') as number[][];
-  // const skyscrapers: number[][] = [];
-  // xzVertices.forEach(anchor => {
-  //   skyscrapers.push([anchor[0], -1, -1]);
-  //   skyscrapers.push([anchor[0], 1, -1]);
-  //   // skyscrapers.push([anchor[0], -1, anchor[1]]);
-  //   // skyscrapers.push([anchor[0], 1, anchor[1]]);
-  // });
-  // // skyscrapers.push(
-  // //   [0, 0, -1],
-  // // );
-  // // console.log(skyscrapers);
-  //
-  // const zoneVao = gl.createVertexArray();
-  // const zoneVbo = gl.createBuffer();
-  // gl.bindVertexArray(zoneVao);
-  // const zoneVertices = new Float32Array(skyscrapers.flat());
-  // gl.bindBuffer(gl.ARRAY_BUFFER, zoneVbo);
-  // gl.bufferData(gl.ARRAY_BUFFER, zoneVertices, gl.STATIC_DRAW);
-  // gl.vertexAttribPointer(0, 3, gl.FLOAT, false, FLOAT32_SIZE * 3, 0);
-  // gl.enableVertexAttribArray(0);
+  const zoneVertexShader = await compileShader(gl, 'shaders/zone.vert', gl.VERTEX_SHADER);
+  const zoneFragmentShader = await compileShader(gl, 'shaders/zone.frag', gl.FRAGMENT_SHADER);
+  const zoneProgram = createProgram(gl, zoneVertexShader, zoneFragmentShader)!;
 
-
+  const skyscrapers: number[][] = [];
+  const xzVertices = JSON.parse(localStorage.getItem('xzVertices') ?? '[]') as number[][]
+  xzVertices.forEach(anchor => {
+    skyscrapers.push([anchor[0], -1, anchor[1]]);
+    skyscrapers.push([anchor[0], 1, anchor[1]]);
+  });
+  // const fullscreenCoverage = [
+  //   [1, -1],
+  //   [1, 1],
+  //   [-1, -1],
+  //   [-1, 1]
+  // ];
+  const zoneVao = gl.createVertexArray();
+  const zoneVbo = gl.createBuffer();
+  gl.bindVertexArray(zoneVao);
+  const zoneVertices = new Float32Array(skyscrapers.flat());
+  gl.bindBuffer(gl.ARRAY_BUFFER, zoneVbo);
+  gl.bufferData(gl.ARRAY_BUFFER, zoneVertices, gl.STATIC_DRAW);
+  gl.vertexAttribPointer(0, 3, gl.FLOAT, false, FLOAT32_SIZE * 3, 0);
+  gl.enableVertexAttribArray(0);
 
   function animate() {
     // Clear background
     gl.clearColor(0, 0, 0, 1);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-    // Uniforms
+    let xzVerticesLocation: WebGLUniformLocation | null;
+
+    // Point Cloud
     gl.useProgram(pointsProgram);
-    const xzVerticesLocation = gl.getUniformLocation(pointsProgram, "u_xzVertices");
-    const xzVertices = JSON.parse(localStorage.getItem('xzVertices') ?? '[]') as number[][];
+    xzVerticesLocation = gl.getUniformLocation(pointsProgram, "u_xzVertices");
     gl.uniform2fv(xzVerticesLocation, new Float32Array(xzVertices.flat()));
     gl.bindVertexArray(pointsVao);
     gl.drawArrays(gl.POINTS, 0, points.length);
 
-    // gl.useProgram(zoneProgram);
-    // gl.bindVertexArray(zoneVao);
-    // gl.drawArrays(gl.LINES, 0, skyscrapers.length);
+    // Zones
+    gl.useProgram(zoneProgram);
+    gl.bindVertexArray(zoneVao);
+    gl.drawArrays(gl.LINES, 0, skyscrapers.length);
 
 
     render();
