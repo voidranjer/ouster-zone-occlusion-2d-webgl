@@ -37,7 +37,9 @@ async function main() {
       .map((measurement, colIdx) => {
         const xCoord = glNormalize(colIdx, MAX_COLS);
         const zCoord = (measurement === 0) ? -2 : measurement; // cull zero values (infinite distance)
-        const reflectivity_measurement = Math.min(reflectivityPayload[rowIdx][colIdx] + 0.1, 1.0); // `+0.1` for brightness
+
+        const CONTRAST_FACTOR = 8;
+        const reflectivity_measurement = Math.min(reflectivityPayload[rowIdx][colIdx] * CONTRAST_FACTOR + 0.0, 1.0);
         return [xCoord, yCoord, zCoord, reflectivity_measurement];
       });
   }).flat();
