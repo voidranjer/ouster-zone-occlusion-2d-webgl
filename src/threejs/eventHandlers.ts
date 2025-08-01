@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { zoneLines, canvas, scene, renderer, camera, controls, mouse, raycaster, plane, zoneVertices, xzVertices } from './index.ts';
 import { createLine } from "./utils"
+import { gl } from '../main.ts';
 
 export const PLANE_Y = -1.0;
 const MAX_RANGE = 200; // 200m for OS-1-128
@@ -11,7 +12,14 @@ export function resize() {
 
   renderer.setSize(width, height, false);
 
-  camera.aspect = width / height;
+  const aspect = width / height;
+  const viewSize = 80;
+
+  camera.left = -aspect * viewSize / 2;
+  camera.right = aspect * viewSize / 2;
+  camera.top = viewSize / 2;
+  camera.bottom = -viewSize / 2;
+
   camera.updateProjectionMatrix();
   controls.update();
 }
@@ -63,6 +71,12 @@ export function onMouseClick(event: MouseEvent) {
 
     // Set these points into localStorage
     localStorage.setItem('xzVertices', JSON.stringify(xzVertices));
+    localStorage.removeItem('mode');
   }
 }
 
+document.getElementById("selectionButton")?.addEventListener('click', (e) => {
+  e.stopPropagation();
+  localStorage.setItem('mode', 'edit');
+  localStorage.removeItem('xzVertices');
+})

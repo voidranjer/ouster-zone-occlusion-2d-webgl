@@ -7,11 +7,11 @@ import './style.css'
 export const MAX_ROWS = 128;
 export const MAX_COLS = 1024;
 
-async function main() {
-  // Get canvas and webgl context
-  const canvas = document.getElementById('webgl-canvas')! as HTMLCanvasElement;
-  const gl = canvas.getContext('webgl2')!;
+// Get canvas and webgl context
+const canvas = document.getElementById('webgl-canvas')! as HTMLCanvasElement;
+export const gl = canvas.getContext('webgl2')!;
 
+async function main() {
   // Global GL settings
   gl.enable(gl.DEPTH_TEST);
 
@@ -59,25 +59,17 @@ async function main() {
   const zoneVertexShader = await compileShader(gl, 'shaders/zone.vert', gl.VERTEX_SHADER);
   const zoneFragmentShader = await compileShader(gl, 'shaders/zone.frag', gl.FRAGMENT_SHADER);
   const zoneProgram = createProgram(gl, zoneVertexShader, zoneFragmentShader)!;
-
-  const skyscrapers: number[][] = [];
-  const xzVertices = JSON.parse(localStorage.getItem('xzVertices') ?? '[]') as number[][]
-  xzVertices.forEach(anchor => {
-    skyscrapers.push([anchor[0], -1, anchor[1]]);
-    skyscrapers.push([anchor[0], 1, anchor[1]]);
-  });
-  // const fullscreenCoverage = [
-  //   [1, -1],
-  //   [1, 1],
-  //   [-1, -1],
-  //   [-1, 1]
-  // ];
+  // const skyscrapers: number[][] = [];
+  // const xzVertices = JSON.parse(localStorage.getItem('xzVertices') ?? '[]') as number[][]
+  // xzVertices.forEach(anchor => {
+  //   skyscrapers.push([anchor[0], -1, anchor[1]]);
+  //   skyscrapers.push([anchor[0], 1, anchor[1]]);
+  // });
+  // const zoneVertices = new Float32Array(skyscrapers.flat());
   const zoneVao = gl.createVertexArray();
   const zoneVbo = gl.createBuffer();
   gl.bindVertexArray(zoneVao);
-  const zoneVertices = new Float32Array(skyscrapers.flat());
   gl.bindBuffer(gl.ARRAY_BUFFER, zoneVbo);
-  gl.bufferData(gl.ARRAY_BUFFER, zoneVertices, gl.STATIC_DRAW);
   gl.vertexAttribPointer(0, 3, gl.FLOAT, false, FLOAT32_SIZE * 3, 0);
   gl.enableVertexAttribArray(0);
 
@@ -87,6 +79,7 @@ async function main() {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
     let xzVerticesLocation: WebGLUniformLocation | null;
+    const xzVertices = JSON.parse(localStorage.getItem('xzVertices') ?? '[[2, 2], [2, 2], [2, 2], [2, 2]]') as number[][]
 
     // Point Cloud
     gl.useProgram(pointsProgram);
@@ -98,6 +91,13 @@ async function main() {
     // Zones
     gl.useProgram(zoneProgram);
     gl.bindVertexArray(zoneVao);
+    const skyscrapers: number[][] = [];
+    xzVertices.forEach(anchor => {
+      skyscrapers.push([anchor[0], -1, anchor[1]]);
+      skyscrapers.push([anchor[0], 1, anchor[1]]);
+    });
+    const zoneVertices = new Float32Array(skyscrapers.flat());
+    gl.bufferData(gl.ARRAY_BUFFER, zoneVertices, gl.STATIC_DRAW); // TODO: bad practice. minimize copying to VBO from RAM (move out of animate func)
     gl.drawArrays(gl.LINES, 0, skyscrapers.length);
 
 

@@ -7,12 +7,7 @@ const POINTS_SIZE = 0.05;
 
 // Three.js essentials
 export const scene = new THREE.Scene();
-export const camera = new THREE.PerspectiveCamera(
-  75,
-  window.innerWidth / window.innerHeight,
-  0.1,
-  1000
-);
+export const camera = new THREE.OrthographicCamera();
 export const canvas = document.getElementById('threejs-canvas')! as HTMLCanvasElement;
 export const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
 
@@ -32,6 +27,7 @@ export const zoneLines: THREE.Line[] = [];
 
 export function render() {
   controls.update(); // required if enableDamping is true
+  controls.enabled = localStorage.getItem('mode') !== 'edit';
   renderer.render(scene, camera);
 }
 
@@ -84,4 +80,7 @@ export async function setup() {
 
   // Add mouse event listener for clicks
   window.addEventListener('click', onMouseClick, false);
+
+  // Initialize localStorage state
+  localStorage.removeItem('mode');
 }
