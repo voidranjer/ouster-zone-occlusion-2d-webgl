@@ -36,7 +36,7 @@ async function main() {
     return row
       .map((measurement, colIdx) => {
         const xCoord = glNormalize(colIdx, MAX_COLS);
-        const zCoord = (measurement === 0) ? -2 : measurement; // cull zero values (infinite distance)
+        const zCoord = (measurement === -1) ? -2 : measurement; // cull zero values (infinite distance)
 
         const CONTRAST_FACTOR = 1;
         const reflectivity_measurement = Math.min(reflectivityPayload[rowIdx][colIdx] * CONTRAST_FACTOR + 0.0, 1.0);
