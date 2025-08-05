@@ -11,6 +11,7 @@ def parse2D(
     source_max: float,
     target_min: float,
     target_max: float,
+    contrast_factor=1,
 ):
     # Compute and print min/max
     print(f"\n=== 2D Statistics ({name}) ===")
@@ -25,6 +26,9 @@ def parse2D(
     source_range = source_max - source_min
     target_range = target_max - target_min
     normalized = target_min + (payload - source_min) * target_range / source_range
+
+    # Brighten
+    normalized = np.minimum(normalized * contrast_factor, np.ones_like(normalized))
 
     # Normalized
     min_val = np.min(normalized)
@@ -47,9 +51,11 @@ def parse2D(
 
 pcap_path = "OS-1-128_v3.0.1_1024x10_20230216_142857-000.pcap"
 metadata_path = "OS-1-128_v3.0.1_1024x10_20230216_142857.json"
+# pcap_path = "kanata.pcap"
+# metadata_path = "kanata.json"
 
 sensor_idx = 0
-frame_number = 10
+frame_number = 2
 
 source: ScanSource = open_source(
     pcap_path, meta=[metadata_path], sensor_idx=sensor_idx, collate=False, index=True
@@ -67,7 +73,7 @@ reflectivity_field = scan.field(ChanField.REFLECTIVITY)
 # reflectivity_field = scan.field(ChanField.NEAR_IR)
 reflectivity_img = destagger(sensor_info, reflectivity_field)
 # reflectivity_normalized = parse2D(reflectivity_img, "reflectivity", 0, 65535, 0, 1)
-reflectivity_normalized = parse2D(reflectivity_img, "reflectivity", 0, 255, 0, 1)
+reflectivity_normalized = parse2D(reflectivity_img, "reflectivity", 0, 255, 0, 1, 8)
 
 # -- viz -- #
 

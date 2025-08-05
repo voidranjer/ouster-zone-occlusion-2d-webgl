@@ -38,7 +38,7 @@ async function main() {
         const xCoord = glNormalize(colIdx, MAX_COLS);
         const zCoord = (measurement === 0) ? -2 : measurement; // cull zero values (infinite distance)
 
-        const CONTRAST_FACTOR = 8;
+        const CONTRAST_FACTOR = 1;
         const reflectivity_measurement = Math.min(reflectivityPayload[rowIdx][colIdx] * CONTRAST_FACTOR + 0.0, 1.0);
         return [xCoord, yCoord, zCoord, reflectivity_measurement];
       });

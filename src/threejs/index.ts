@@ -2,8 +2,9 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { fetchJsonFile } from '../lib/utils';
 import { onMouseClick, PLANE_Y } from './eventHandlers';
+import { resetZone } from './utils';
 
-const POINTS_SIZE = 0.05;
+const POINTS_SIZE = 1.5;
 
 // Three.js essentials
 export const scene = new THREE.Scene();
@@ -18,9 +19,9 @@ export let mouse = new THREE.Vector2();
 export let plane: THREE.Mesh;
 
 // State
-export const zoneVertices: THREE.Vector3[] = [];
-export const xzVertices: number[][] = [];
+export const zoneVertices: THREE.Mesh[] = [];
 export const zoneLines: THREE.Line[] = [];
+export const xzVertices: number[][] = [];
 
 /* --- FUNCTIONS ---*/
 
@@ -83,4 +84,5 @@ export async function setup() {
 
   // Initialize localStorage state
   localStorage.removeItem('mode');
+  resetZone();
 }

@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { zoneLines, canvas, scene, renderer, camera, controls, mouse, raycaster, plane, zoneVertices, xzVertices } from './index.ts';
-import { createLine } from "./utils"
+import { createLine, resetZone } from "./utils"
 import { gl } from '../main.ts';
 
 export const PLANE_Y = -1.0;
@@ -13,7 +13,7 @@ export function resize() {
   renderer.setSize(width, height, false);
 
   const aspect = width / height;
-  const viewSize = 80;
+  const viewSize = 100;
 
   camera.left = -aspect * viewSize / 2;
   camera.right = aspect * viewSize / 2;
@@ -40,7 +40,6 @@ export function onMouseClick(event: MouseEvent) {
   if (intersects.length === 0) return;
 
   const point = intersects[0].point.clone();
-  zoneVertices.push(point);
 
   const normalizedX = -1 * Math.atan2(-point.z, point.x) / Math.PI;
   // IMPORTANT NOTE: distanceTo(0,0,0) MUST MATCH VERTICLE LEVEL WITH RAYCAST PLANE
@@ -54,10 +53,11 @@ export function onMouseClick(event: MouseEvent) {
   const box = new THREE.Mesh(boxGeometry, boxMaterial);
   box.position.copy(point);
   scene.add(box);
+  zoneVertices.push(box);
 
   // Draw a line to the previous point
   if (zoneVertices.length > 1) {
-    const prev = zoneVertices[zoneVertices.length - 2];
+    const prev = zoneVertices[zoneVertices.length - 2].position;
     const line = createLine(prev, point);
     scene.add(line);
     zoneLines.push(line);
@@ -65,7 +65,7 @@ export function onMouseClick(event: MouseEvent) {
 
   // Close the loop if this is the 4th point
   if (zoneVertices.length === 4) {
-    const line = createLine(zoneVertices[3], zoneVertices[0]);
+    const line = createLine(zoneVertices[3].position, zoneVertices[0].position);
     scene.add(line);
     zoneLines.push(line);
 
@@ -75,8 +75,8 @@ export function onMouseClick(event: MouseEvent) {
   }
 }
 
-document.getElementById("selectionButton")?.addEventListener('click', (e) => {
+document.getElementById("rezoneButton")?.addEventListener('click', (e) => {
   e.stopPropagation();
   localStorage.setItem('mode', 'edit');
-  localStorage.removeItem('xzVertices');
+  resetZone();
 })
