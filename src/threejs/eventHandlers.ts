@@ -1,9 +1,9 @@
 import * as THREE from 'three';
 import { zoneLines, canvas, scene, renderer, camera, controls, mouse, raycaster, plane, zoneVertices, xzVertices } from './index.ts';
-import { createLine, resetZone } from "./utils"
+import { createLine, resetZone, xyzToXz } from "./utils"
 
 export const PLANE_Y = -1.0;
-const MAX_RANGE = 200; // 200m for OS-1-128
+export const MAX_RANGE = 200; // 200m for OS-1-128
 export const NUM_VERTICES = 4;
 
 export function resize() {
@@ -40,11 +40,7 @@ window.addEventListener('click', (event: MouseEvent) => {
   if (intersects.length === 0) return;
 
   const point = intersects[0].point.clone();
-
-  const normalizedX = -1 * Math.atan2(-point.z, point.x) / Math.PI;
-  // IMPORTANT NOTE: distanceTo(0,0,0) MUST MATCH VERTICLE LEVEL WITH RAYCAST PLANE
-  const normalizedZ = 2 * ((point.distanceTo((new THREE.Vector3(0, PLANE_Y, 0)))) / MAX_RANGE) - 1;
-  xzVertices.push([normalizedX, normalizedZ]);
+  xzVertices.push(xyzToXz(point));
 
   // Add the box
   const boxSize = 0.2;
@@ -72,6 +68,28 @@ window.addEventListener('click', (event: MouseEvent) => {
     localStorage.removeItem('mode');
   }
 });
+
+window.addEventListener('mousemove', (event: MouseEvent) => {
+  const mode = localStorage.getItem('mode');
+  if (mode === null || mode !== 'highlight') return;
+
+  const rect = renderer.domElement.getBoundingClientRect();
+  mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+  mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+  raycaster.setFromCamera(mouse, camera);
+
+  const intersects = raycaster.intersectObject(plane);
+  if (intersects.length === 0) return;
+
+  const point = intersects[0].point.clone();
+
+  const radius = 1; // meters
+  xzVertices[0] = xyzToXz(new THREE.Vector3(point.x - radius, point.y, point.z + radius));
+  xzVertices[1] = xyzToXz(new THREE.Vector3(point.x + radius, point.y, point.z + radius));
+  xzVertices[2] = xyzToXz(new THREE.Vector3(point.x + radius, point.y, point.z - radius));
+  xzVertices[3] = xyzToXz(new THREE.Vector3(point.x - radius, point.y, point.z - radius));
+})
 
 document.getElementById("rezoneButton")?.addEventListener('click', (e) => {
   e.stopPropagation();
