@@ -10,8 +10,6 @@ export function createLine(p1: THREE.Vector3, p2: THREE.Vector3): THREE.Line {
 }
 
 export function resetZone() {
-  localStorage.removeItem('xzVertices');
-
   let xzVertex = xzVertices.pop();
   while (xzVertex !== undefined) {
     xzVertex = xzVertices.pop();

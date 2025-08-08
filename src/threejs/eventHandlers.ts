@@ -1,10 +1,10 @@
 import * as THREE from 'three';
 import { zoneLines, canvas, scene, renderer, camera, controls, mouse, raycaster, plane, zoneVertices, xzVertices } from './index.ts';
 import { createLine, resetZone } from "./utils"
-import { gl } from '../main.ts';
 
 export const PLANE_Y = -1.0;
 const MAX_RANGE = 200; // 200m for OS-1-128
+export const NUM_VERTICES = 4;
 
 export function resize() {
   const width = canvas.clientWidth;
@@ -24,11 +24,11 @@ export function resize() {
   controls.update();
 }
 
-export function onMouseClick(event: MouseEvent) {
+window.addEventListener('click', (event: MouseEvent) => {
   const mode = localStorage.getItem('mode');
   if (mode === null || mode !== 'edit') return;
 
-  if (zoneVertices.length >= 4) return; // Stop after 4 points
+  if (zoneVertices.length >= NUM_VERTICES) return; // Stop after 4 points
 
   const rect = renderer.domElement.getBoundingClientRect();
   mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
@@ -64,19 +64,23 @@ export function onMouseClick(event: MouseEvent) {
   }
 
   // Close the loop if this is the 4th point
-  if (zoneVertices.length === 4) {
+  if (zoneVertices.length === NUM_VERTICES) {
     const line = createLine(zoneVertices[3].position, zoneVertices[0].position);
     scene.add(line);
     zoneLines.push(line);
 
-    // Set these points into localStorage
-    localStorage.setItem('xzVertices', JSON.stringify(xzVertices));
     localStorage.removeItem('mode');
   }
-}
+});
 
 document.getElementById("rezoneButton")?.addEventListener('click', (e) => {
   e.stopPropagation();
   localStorage.setItem('mode', 'edit');
+  resetZone();
+})
+
+document.getElementById("highlightButton")?.addEventListener('click', (e) => {
+  e.stopPropagation();
+  localStorage.setItem('mode', 'highlight');
   resetZone();
 })

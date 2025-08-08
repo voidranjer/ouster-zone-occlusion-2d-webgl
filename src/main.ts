@@ -1,6 +1,6 @@
 import { FLOAT32_SIZE } from './lib/constants';
 import { render, setup as threejsSetup, xzVertices, } from './threejs';
-import { resize as threejsResize } from './threejs/eventHandlers';
+import { NUM_VERTICES, resize as threejsResize } from './threejs/eventHandlers';
 import { compileShader, createProgram, fetchJsonFile, glNormalize, resize } from './lib/utils';
 import './style.css'
 
@@ -79,12 +79,13 @@ async function main() {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
     let xzVerticesLocation: WebGLUniformLocation | null;
-    const xzVertices = JSON.parse(localStorage.getItem('xzVertices') ?? '[[2, 2], [2, 2], [2, 2], [2, 2]]') as number[][]
 
     // Point Cloud
     gl.useProgram(pointsProgram);
-    xzVerticesLocation = gl.getUniformLocation(pointsProgram, "u_xzVertices");
-    gl.uniform2fv(xzVerticesLocation, new Float32Array(xzVertices.flat()));
+    if (xzVertices.length === NUM_VERTICES) {
+      xzVerticesLocation = gl.getUniformLocation(pointsProgram, "u_xzVertices");
+      gl.uniform2fv(xzVerticesLocation, new Float32Array(xzVertices.flat()));
+    }
     gl.bindVertexArray(pointsVao);
     gl.drawArrays(gl.POINTS, 0, points.length);
 

@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { fetchJsonFile } from '../lib/utils';
-import { onMouseClick, PLANE_Y } from './eventHandlers';
+import { NUM_VERTICES, PLANE_Y } from './eventHandlers';
 import { resetZone } from './utils';
 
 const POINTS_SIZE = 1.5;
@@ -78,9 +78,6 @@ export async function setup() {
   const box = new THREE.Mesh(boxGeometry, boxMaterial);
   box.position.set(0, 0, 0);
   scene.add(box);
-
-  // Add mouse event listener for clicks
-  window.addEventListener('click', onMouseClick, false);
 
   // Initialize localStorage state
   localStorage.removeItem('mode');
