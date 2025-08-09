@@ -72,6 +72,13 @@ export async function setup() {
   plane.position.y = PLANE_Y;
   scene.add(plane);
 
+  // Create a grid helper
+  const size = 200;      // 400 meters wide
+  const divisions = 100; // 2 meter per grid square
+  const gridHelper = new THREE.GridHelper(size, divisions, 0xff0000, 0x3b3b3b);
+  gridHelper.position.y = PLANE_Y;  // position at the same Y level as before
+  scene.add(gridHelper);
+
   // Origin indicator (white cube)
   const boxGeometry = new THREE.BoxGeometry(1, 1, 1);
   const boxMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });

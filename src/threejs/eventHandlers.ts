@@ -13,7 +13,7 @@ export function resize() {
   renderer.setSize(width, height, false);
 
   const aspect = width / height;
-  const viewSize = 100;
+  const viewSize = 50;
 
   camera.left = -aspect * viewSize / 2;
   camera.right = aspect * viewSize / 2;
@@ -97,8 +97,20 @@ document.getElementById("rezoneButton")?.addEventListener('click', (e) => {
   resetZone();
 })
 
-document.getElementById("highlightButton")?.addEventListener('click', (e) => {
+document.getElementById("highlightButton")?.addEventListener('click', (e: MouseEvent) => {
   e.stopPropagation();
-  localStorage.setItem('mode', 'highlight');
+
+  const button = e.target as HTMLElement;
+
+  if (localStorage.getItem('mode') === 'highlight') {
+    localStorage.removeItem('mode');
+    button.innerHTML = 'Highlight';
+  }
+
+  else {
+    localStorage.setItem('mode', 'highlight');
+    button.innerHTML = 'Cancel';
+  }
+
   resetZone();
 })
