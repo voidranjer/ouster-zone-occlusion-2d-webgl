@@ -14,6 +14,74 @@
         <button id="highlightButton" class="bg-red-500 px-3 rounded-lg border-2 border-white cursor-pointer hover:bg-red-400">Highlight</button>
       </div>
     </div>
+    
+    <!-- Extrinsics Controls Panel -->
+    <div id="extrinsics-panel" class="fixed left-4 top-1/2 transform -translate-y-1/2 bg-gray-800 bg-opacity-90 text-white p-4 rounded-lg shadow-lg w-64 z-10">
+      <h3 class="text-lg font-bold mb-4 text-center">Extrinsics Controls</h3>
+      
+      <div class="space-y-4">
+        <!-- Translation Controls -->
+        <div class="border-b border-gray-600 pb-3">
+          <h4 class="text-sm font-semibold mb-2">Translation</h4>
+          
+          <div class="mb-2">
+            <label for="tx-slider" class="block text-xs mb-1">X:</label>
+            <div class="flex items-center space-x-2">
+              <input type="range" id="tx-slider" min="-50" max="50" value="0" step="0.1" class="flex-1">
+              <input type="number" id="tx-input" min="-50" max="50" value="0" step="0.1" class="w-8 px-1 py-0.5 text-xs bg-gray-700 border border-gray-600 rounded text-white">
+            </div>
+          </div>
+          
+          <div class="mb-2">
+            <label for="ty-slider" class="block text-xs mb-1">Y:</label>
+            <div class="flex items-center space-x-2">
+              <input type="range" id="ty-slider" min="-50" max="50" value="1.5" step="0.1" class="flex-1">
+              <input type="number" id="ty-input" min="-50" max="50" value="1.5" step="0.1" class="w-8 px-1 py-0.5 text-xs bg-gray-700 border border-gray-600 rounded text-white">
+            </div>
+          </div>
+          
+          <div class="mb-2">
+            <label for="tz-slider" class="block text-xs mb-1">Z:</label>
+            <div class="flex items-center space-x-2">
+              <input type="range" id="tz-slider" min="-50" max="50" value="0" step="0.1" class="flex-1">
+              <input type="number" id="tz-input" min="-50" max="50" value="0" step="0.1" class="w-8 px-1 py-0.5 text-xs bg-gray-700 border border-gray-600 rounded text-white">
+            </div>
+          </div>
+        </div>
+        
+        <!-- Rotation Controls -->
+        <div>
+          <h4 class="text-sm font-semibold mb-2">Rotation (degrees)</h4>
+          
+          <div class="mb-2">
+            <label for="rx-slider" class="block text-xs mb-1">X:</label>
+            <div class="flex items-center space-x-2">
+              <input type="range" id="rx-slider" min="-180" max="180" value="0" step="1" class="flex-1">
+              <input type="number" id="rx-input" min="-180" max="180" value="0" step="1" class="w-8 px-1 py-0.5 text-xs bg-gray-700 border border-gray-600 rounded text-white">
+            </div>
+          </div>
+          
+          <div class="mb-2">
+            <label for="ry-slider" class="block text-xs mb-1">Y:</label>
+            <div class="flex items-center space-x-2">
+              <input type="range" id="ry-slider" min="-180" max="180" value="-2.5" step="1" class="flex-1">
+              <input type="number" id="ry-input" min="-180" max="180" value="-2.5" step="1" class="w-8 px-1 py-0.5 text-xs bg-gray-700 border border-gray-600 rounded text-white">
+            </div>
+          </div>
+          
+          <div class="mb-2">
+            <label for="rz-slider" class="block text-xs mb-1">Z:</label>
+            <div class="flex items-center space-x-2">
+              <input type="range" id="rz-slider" min="-180" max="180" value="-4.5" step="1" class="flex-1">
+              <input type="number" id="rz-input" min="-180" max="180" value="-4.5" step="1" class="w-8 px-1 py-0.5 text-xs bg-gray-700 border border-gray-600 rounded text-white">
+            </div>
+          </div>
+        </div>
+        
+        <button id="reset-extrinsics" class="w-full bg-gray-600 hover:bg-gray-500 px-3 py-2 rounded text-sm">Reset</button>
+      </div>
+    </div>
+    
     <canvas id="threejs-canvas"></canvas>
     <script type="module" src="/src/main.ts"></script>
   </body>

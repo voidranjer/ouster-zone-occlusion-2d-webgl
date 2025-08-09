@@ -1,5 +1,5 @@
 import { FLOAT32_SIZE } from './lib/constants';
-import { render, setup as threejsSetup, xzVertices, } from './threejs';
+import { render, setup as threejsSetup, xzVertices } from './threejs';
 import { NUM_VERTICES, resize as threejsResize } from './threejs/eventHandlers';
 import { compileShader, createProgram, fetchJsonFile, glNormalize, resize } from './lib/utils';
 import './style.css'
@@ -117,3 +117,4 @@ async function main() {
 
 threejsSetup();
 main();
+
