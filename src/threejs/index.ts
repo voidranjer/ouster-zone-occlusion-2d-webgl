@@ -4,7 +4,7 @@ import { fetchJsonFile } from '../lib/utils';
 import { PLANE_Y } from './eventHandlers';
 import { resetZone } from './utils';
 
-const POINTS_SIZE = 1.5;
+const POINTS_SIZE = 2;
 
 // Three.js essentials
 export const scene = new THREE.Scene();
@@ -95,10 +95,10 @@ export async function setup() {
 
   // Add point cloud
   const geometry = new THREE.BufferGeometry();
-  const pointsData: number[][] = await fetchJsonFile('data/points.json');
+  const pointsData: number[][] = await fetchJsonFile('data/points_3d.json');
   const positions = new Float32Array(pointsData.flat());
   geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-  const reflectivityData: number[][] = await fetchJsonFile('data/points_reflectivity.json');
+  const reflectivityData: number[][] = await fetchJsonFile('data/reflectivity_3d.json');
   const colors = new Float32Array(reflectivityData.flat());
   geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
   const material = new THREE.PointsMaterial({

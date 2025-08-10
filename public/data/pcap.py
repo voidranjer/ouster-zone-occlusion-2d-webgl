@@ -67,13 +67,13 @@ scan: LidarScan = frame[sensor_idx]
 
 range_field = scan.field(ChanField.RANGE)
 range_img = destagger(sensor_info, range_field)
-parse2D(range_img, "range", 0, 200_000, -1, 1)  # 200 meters for OS-1-128
+parse2D(range_img, "range_2d", 0, 200_000, -1, 1)  # 200 meters for OS-1-128
 
 reflectivity_field = scan.field(ChanField.REFLECTIVITY)
 # reflectivity_field = scan.field(ChanField.NEAR_IR)
 reflectivity_img = destagger(sensor_info, reflectivity_field)
 # reflectivity_normalized = parse2D(reflectivity_img, "reflectivity", 0, 65535, 0, 1)
-reflectivity_normalized = parse2D(reflectivity_img, "reflectivity", 0, 255, 0, 1, 8)
+reflectivity_normalized = parse2D(reflectivity_img, "reflectivity_2d", 0, 255, 0, 1, 8)
 
 # -- viz -- #
 
@@ -99,7 +99,7 @@ xyz = xyzlut(scan)
 
 # Range
 xyz_webgl = np.stack((x, z, -y), axis=1)
-with open("points.json", "w") as outfile:
+with open("points_3d.json", "w") as outfile:
     json.dump(xyz_webgl.tolist(), outfile)
 
 # Reflectivity
@@ -112,7 +112,7 @@ reflectivity_webgl_rgb = np.stack(
     ),
     axis=1,
 )
-with open("points_reflectivity.json", "w") as outfile:
+with open("reflectivity_3d.json", "w") as outfile:
     json.dump(reflectivity_webgl_rgb.tolist(), outfile)
 
 # --- Stats --- #

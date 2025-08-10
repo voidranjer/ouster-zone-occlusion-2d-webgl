@@ -28,8 +28,8 @@ async function main() {
   const pointsFragmentShader = await compileShader(gl, 'shaders/points.frag', gl.FRAGMENT_SHADER);
   const pointsProgram = createProgram(gl, pointsVertexShader, pointsFragmentShader)!;
 
-  const rangePayload: number[][] = await fetchJsonFile('data/range.json');
-  const reflectivityPayload: number[][] = await fetchJsonFile('data/reflectivity.json');
+  const rangePayload: number[][] = await fetchJsonFile('data/range_2d.json');
+  const reflectivityPayload: number[][] = await fetchJsonFile('data/reflectivity_2d.json');
 
   const points = rangePayload.map((row, rowIdx) => {
     const yCoord = -1 * glNormalize(rowIdx, MAX_ROWS);

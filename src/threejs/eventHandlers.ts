@@ -212,14 +212,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // Reset button
   resetButton.addEventListener('click', () => {
     txSlider.value = '0';
-    tySlider.value = '1.5';
+    tySlider.value = '1';
     tzSlider.value = '0';
     rxSlider.value = '0';
     rySlider.value = '-2.5';
     rzSlider.value = '-4.5';
     
     txInput.value = '0';
-    tyInput.value = '1.5';
+    tyInput.value = '1';
     tzInput.value = '0';
     rxInput.value = '0';
     ryInput.value = '-2.5';
