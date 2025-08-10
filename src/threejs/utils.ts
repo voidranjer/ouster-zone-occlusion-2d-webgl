@@ -2,7 +2,7 @@ import * as THREE from 'three';
 
 import { xzVertices } from '.';
 import { zoneVertices, zoneLines } from '.';
-import { PLANE_Y, MAX_RANGE } from './eventHandlers';
+import { MAX_RANGE } from './eventHandlers';
 
 export function createLine(p1: THREE.Vector3, p2: THREE.Vector3): THREE.Line {
   const geometry = new THREE.BufferGeometry().setFromPoints([p1, p2]);
@@ -29,8 +29,9 @@ export function resetZone() {
   }
 }
 
-export function xyzToXz(point: THREE.Vector3) {
-  const normalizedX = -1 * Math.atan2(-point.z, point.x) / Math.PI;
-  const normalizedZ = 2 * ((point.distanceTo((new THREE.Vector3(0, PLANE_Y, 0)))) / MAX_RANGE) - 1;
+export function xzToClipSpace(x: number, z: number): [number, number] {
+  // TODO: this doesn't account for if X/Z extrinsics are applied
+  const normalizedX = -1 * Math.atan2(-z, x) / Math.PI;
+  const normalizedZ = 2 * ((new THREE.Vector2(x, z).distanceTo((new THREE.Vector2(0, 0)))) / MAX_RANGE) - 1;
   return [normalizedX, normalizedZ];
 }

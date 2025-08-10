@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { zoneLines, canvas, scene, renderer, camera, controls, mouse, raycaster, plane, zoneVertices, xzVertices, updateExtrinsics } from './index.ts';
-import { createLine, resetZone, xyzToXz } from "./utils"
+import { createLine, resetZone } from "./utils"
 
 export const PLANE_Y = -1.0;
 export const MAX_RANGE = 200; // 200m for OS-1-128
@@ -40,7 +40,7 @@ window.addEventListener('click', (event: MouseEvent) => {
   if (intersects.length === 0) return;
 
   const point = intersects[0].point.clone();
-  xzVertices.push(xyzToXz(point));
+  xzVertices.push([point.x, point.z]);
 
   // Add the box
   const boxSize = 0.2;
@@ -85,10 +85,10 @@ window.addEventListener('mousemove', (event: MouseEvent) => {
   const point = intersects[0].point.clone();
 
   const radius = 1; // meters
-  xzVertices[0] = xyzToXz(new THREE.Vector3(point.x - radius, point.y, point.z + radius));
-  xzVertices[1] = xyzToXz(new THREE.Vector3(point.x + radius, point.y, point.z + radius));
-  xzVertices[2] = xyzToXz(new THREE.Vector3(point.x + radius, point.y, point.z - radius));
-  xzVertices[3] = xyzToXz(new THREE.Vector3(point.x - radius, point.y, point.z - radius));
+  xzVertices[0] = [point.x - radius, point.z + radius];
+  xzVertices[1] =[point.x + radius, point.z + radius];
+  xzVertices[2] =[point.x + radius, point.z - radius];
+  xzVertices[3] =[point.x - radius, point.z - radius];
 })
 
 document.getElementById("rezoneButton")?.addEventListener('click', (e) => {

@@ -95,10 +95,10 @@ export async function setup() {
 
   // Add point cloud
   const geometry = new THREE.BufferGeometry();
-  const pointsData: number[][] = await fetchJsonFile('data/points_3d.json');
-  const positions = new Float32Array(pointsData.flat());
+  const pointsData: number[] = await fetchJsonFile('data/points.json');
+  const positions = new Float32Array(pointsData);
   geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-  const reflectivityData: number[][] = await fetchJsonFile('data/reflectivity_3d.json');
+  const reflectivityData: number[][] = await fetchJsonFile('data/reflectivity_rgb.json');
   const colors = new Float32Array(reflectivityData.flat());
   geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
   const material = new THREE.PointsMaterial({
