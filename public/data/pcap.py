@@ -55,14 +55,14 @@ metadata_path = "OS-1-128_v3.0.1_1024x10_20230216_142857.json"
 # metadata_path = "kanata.json"
 
 sensor_idx = 0
-frame_number = 2
+# frame_number = 4
 
 source: ScanSource = open_source(
     pcap_path, meta=[metadata_path], sensor_idx=sensor_idx, collate=False, index=True
 )
 sensor_info = source.sensor_info[sensor_idx]
-frame = source[frame_number]
-# frame = next(iter(source))
+# frame = source[frame_number]
+frame = next(iter(source))
 scan: LidarScan = frame[sensor_idx]
 
 range_field = scan.field(ChanField.RANGE)
@@ -84,7 +84,7 @@ reflectivity_normalized = parse2D(reflectivity_img, "reflectivity_2d", 0, 255, 0
 # plt.show()
 
 xyzlut = XYZLut(sensor_info)
-xyz = xyzlut(scan)
+xyz = destagger(sensor_info, xyzlut(scan))
 
 [x, y, z] = [c.flatten() for c in np.dsplit(xyz, 3)]
 
