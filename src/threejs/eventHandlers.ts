@@ -9,16 +9,18 @@ export const NUM_VERTICES = 4;
 export function resize() {
   const width = canvas.clientWidth;
   const height = canvas.clientHeight;
-
-  renderer.setSize(width, height, false);
-
   const aspect = width / height;
-  const viewSize = 50;
+  renderer.setSize(width, height, false);
+  
+  // Perspective camera
+  camera.aspect = aspect;
 
-  camera.left = -aspect * viewSize / 2;
-  camera.right = aspect * viewSize / 2;
-  camera.top = viewSize / 2;
-  camera.bottom = -viewSize / 2;
+  // Orthographic camera
+  // const viewSize = 50;
+  // camera.left = -aspect * viewSize / 2;
+  // camera.right = aspect * viewSize / 2;
+  // camera.top = viewSize / 2;
+  // camera.bottom = -viewSize / 2;
 
   camera.updateProjectionMatrix();
   controls.update();

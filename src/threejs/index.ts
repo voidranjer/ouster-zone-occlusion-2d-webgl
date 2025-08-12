@@ -4,11 +4,18 @@ import { fetchJsonFile } from '../lib/utils';
 import { PLANE_Y } from './eventHandlers';
 import { resetZone } from './utils';
 
-const POINTS_SIZE = 2;
+const POINTS_SIZE = 0.1;
+// const POINTS_SIZE = 2;
 
 // Three.js essentials
 export const scene = new THREE.Scene();
-export const camera = new THREE.OrthographicCamera();
+// export const camera = new THREE.OrthographicCamera();
+export const camera = new THREE.PerspectiveCamera(
+  75,
+  window.innerWidth / window.innerHeight,
+  0.1,
+  1000
+);
 export const canvas = document.getElementById('threejs-canvas')! as HTMLCanvasElement;
 export const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
 
@@ -105,9 +112,34 @@ export async function setup() {
     // color: new THREE.Color(0, 1, 0),
     vertexColors: true,
     size: POINTS_SIZE,
+    sizeAttenuation: true,  // Enable size attenuation for perspective camera
   });
   const points = new THREE.Points(geometry, material);
   extrinsicsHelper.add(points);
+
+  // Voxelization
+  const voxelSize = 2; // 2 meters
+  const voxelGeometry = new THREE.BufferGeometry();
+  const voxelPositions: number[] = [];
+  for (let i = 0; i < positions.length; i += 3) {
+    const x = Math.floor(positions[i] / voxelSize) * voxelSize + voxelSize / 2;
+    const y = Math.floor(positions[i + 1] / voxelSize) * voxelSize + voxelSize / 2;
+    const z = Math.floor(positions[i + 2] / voxelSize) * voxelSize + voxelSize / 2;
+    voxelPositions.push(x, y, z);
+  }
+  const voxelPositionArray = new Float32Array(voxelPositions);
+  voxelGeometry.setAttribute('position', new THREE.BufferAttribute(voxelPositionArray, 3));
+  const voxelMaterial = new THREE.PointsMaterial({
+    color: new THREE.Color(0, 1, 0),
+    size: voxelSize,
+  });
+  const voxelPoints = new THREE.Points(voxelGeometry, voxelMaterial);
+  voxelPoints.visible = true; // start with voxelization off
+  // extrinsicsHelper.add(voxelPoints);
+  // (document.getElementById('toggle-voxelization') as HTMLInputElement).onchange = (event) => {
+  //   const target = event.target as HTMLInputElement;
+  //   voxelPoints.visible = target.checked;
+  // };
 
   // Sensor wireframe
   const boxGeometry = new THREE.BoxGeometry(1, 1, 1);
