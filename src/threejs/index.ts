@@ -32,7 +32,6 @@ export const xzVertices: number[][] = [];
 
 /* --- FUNCTIONS ---*/
 
-
 export function render() {
   controls.update(); // required if enableDamping is true
   controls.enabled = localStorage.getItem('mode') !== 'edit';

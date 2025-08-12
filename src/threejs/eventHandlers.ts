@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { zoneLines, canvas, scene, renderer, camera, controls, raycaster, zoneVertices, xzVertices, updateExtrinsics, highlighter } from './index.ts';
-import { createLine, resetZone } from "./utils"
+import { createLine, resetZone, updatePointColors, worldToLocalCoordinates } from "./utils"
 
 export const MAX_RANGE = 200; // 200m for OS-1-128
 export const NUM_VERTICES = 4;
@@ -41,7 +41,10 @@ window.addEventListener('click', (event: MouseEvent) => {
   if (intersects.length === 0) return;
 
   const point = intersects[0].point.clone();
-  xzVertices.push([point.x, point.z]);
+  
+  // Transform the world coordinate point to local coordinates for xzVertices
+  const [localX, localZ] = worldToLocalCoordinates(point.x, point.z);
+  xzVertices.push([localX, localZ]);
 
   // Add the box
   const boxSize = 0.2;
@@ -67,6 +70,7 @@ window.addEventListener('click', (event: MouseEvent) => {
     zoneLines.push(line);
 
     localStorage.removeItem('mode');
+    updatePointColors(); // Update point colors when zone is complete
   }
 });
 
@@ -85,15 +89,27 @@ window.addEventListener('mousemove', (event: MouseEvent) => {
 
   const point = intersects[0].point.clone();
 
-  // Update the highlight plane position in memory (for WebGL to consume)
-  // TODO: get vertices from highlighter.highlightPlane directly
-  xzVertices[0] = [point.x - highlighter.HIGHLIGHT_RADIUS, point.z + highlighter.HIGHLIGHT_RADIUS];
-  xzVertices[1] =[point.x + highlighter.HIGHLIGHT_RADIUS, point.z + highlighter.HIGHLIGHT_RADIUS];
-  xzVertices[2] =[point.x + highlighter.HIGHLIGHT_RADIUS, point.z - highlighter.HIGHLIGHT_RADIUS];
-  xzVertices[3] =[point.x - highlighter.HIGHLIGHT_RADIUS, point.z - highlighter.HIGHLIGHT_RADIUS];
-
   // Move the highlight plane and cuboid to the new position
   highlighter.setPosition(point.x, point.z);
+  
+  // Get vertices from highlighter.highlightPlane after it's been positioned
+  const planePosition = highlighter.highlightPlane.position;
+  const radius = highlighter.HIGHLIGHT_RADIUS;
+  
+  // Transform zone vertices from world coordinates to point cloud local coordinates
+  const worldVertices = [
+    [planePosition.x - radius, planePosition.z + radius],
+    [planePosition.x + radius, planePosition.z + radius],
+    [planePosition.x + radius, planePosition.z - radius],
+    [planePosition.x - radius, planePosition.z - radius]
+  ];
+  
+  for (let i = 0; i < 4; i++) {
+    const [localX, localZ] = worldToLocalCoordinates(worldVertices[i][0], worldVertices[i][1]);
+    xzVertices[i] = [localX, localZ];
+  }
+  
+  updatePointColors(); // Update point colors when highlight moves
   
 })
 
