@@ -1,10 +1,10 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { fetchJsonFile } from '../lib/utils';
-import { PLANE_Y } from './eventHandlers';
+import { Highlighter } from './highlighter';
 import { resetZone } from './utils';
 
-const POINTS_SIZE = 0.1;
+export const POINTS_SIZE = 0.1;
 // const POINTS_SIZE = 2;
 
 // Three.js essentials
@@ -20,11 +20,10 @@ export const canvas = document.getElementById('threejs-canvas')! as HTMLCanvasEl
 export const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
 
 // Singletons
-export let controls: OrbitControls;
-export let raycaster = new THREE.Raycaster();
-export let mouse = new THREE.Vector2();
-export let plane: THREE.Mesh;
-export let extrinsicsHelper: THREE.Group;
+export const controls = new OrbitControls(camera, renderer.domElement);
+export const raycaster = new THREE.Raycaster();
+export const extrinsicsHelper = new THREE.Group();
+export const highlighter: Highlighter = new Highlighter(scene);
 
 // State
 export const zoneVertices: THREE.Mesh[] = [];
@@ -81,14 +80,12 @@ export async function setup() {
   camera.position.set(0, 30, 0);
 
   // Orbit controls
-  controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true; // smooth orbiting
   controls.dampingFactor = 0.05;
   // controls.screenSpacePanning = false;
   controls.maxPolarAngle = Math.PI / 2;
 
   // Helper to apply sensor extrinsics to point cloud and sensor wireframe
-  extrinsicsHelper = new THREE.Group();
   extrinsicsHelper.name = 'extrinsics';
   const extrinsics = new THREE.Matrix4();
   extrinsics.set(
@@ -148,24 +145,11 @@ export async function setup() {
   box.position.set(0, 0, 0);
   extrinsicsHelper.add(box);
 
-  // Create invisible plane at minY
-  const planeGeometry = new THREE.PlaneGeometry(1000, 1000);
-  const planeMaterial = new THREE.MeshBasicMaterial({
-    color: 0xffffff,
-    opacity: 0,
-    transparent: true,
-    visible: false,  // keep plane invisible
-  });
-  plane = new THREE.Mesh(planeGeometry, planeMaterial);
-  plane.rotation.x = -Math.PI / 2;  // rotate to horizontal (XZ)
-  plane.position.y = PLANE_Y;
-  scene.add(plane);
-
   // Create a grid helper
   const size = 200;      // 400 meters wide
   const divisions = 100; // 2 meter per grid square
   const gridHelper = new THREE.GridHelper(size, divisions, 0xff0000, 0x3b3b3b);
-  gridHelper.position.y = PLANE_Y;  // position at the same Y level as before
+  gridHelper.position.y = highlighter.PLANE_Y;  // position at the same Y level as before
   scene.add(gridHelper);
 
   // Initialize localStorage state

@@ -1,8 +1,7 @@
 import * as THREE from 'three';
-import { zoneLines, canvas, scene, renderer, camera, controls, mouse, raycaster, plane, zoneVertices, xzVertices, updateExtrinsics } from './index.ts';
+import { zoneLines, canvas, scene, renderer, camera, controls, raycaster, zoneVertices, xzVertices, updateExtrinsics, highlighter } from './index.ts';
 import { createLine, resetZone } from "./utils"
 
-export const PLANE_Y = -1.0;
 export const MAX_RANGE = 200; // 200m for OS-1-128
 export const NUM_VERTICES = 4;
 
@@ -33,12 +32,12 @@ window.addEventListener('click', (event: MouseEvent) => {
   if (zoneVertices.length >= NUM_VERTICES) return; // Stop after 4 points
 
   const rect = renderer.domElement.getBoundingClientRect();
-  mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-  mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+  const mouseX = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+  const mouseY = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
-  raycaster.setFromCamera(mouse, camera);
+  raycaster.setFromCamera(new THREE.Vector2(mouseX, mouseY), camera);
 
-  const intersects = raycaster.intersectObject(plane);
+  const intersects = raycaster.intersectObject(highlighter.invisiblePlane);
   if (intersects.length === 0) return;
 
   const point = intersects[0].point.clone();
@@ -75,22 +74,27 @@ window.addEventListener('mousemove', (event: MouseEvent) => {
   const mode = localStorage.getItem('mode');
   if (mode === null || mode !== 'highlight') return;
 
+  // Raycasting to find intersection with the plane
   const rect = renderer.domElement.getBoundingClientRect();
-  mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-  mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+  const mouseX = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+  const mouseY = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+  raycaster.setFromCamera(new THREE.Vector2(mouseX, mouseY), camera);
 
-  raycaster.setFromCamera(mouse, camera);
-
-  const intersects = raycaster.intersectObject(plane);
+  const intersects = raycaster.intersectObject(highlighter.invisiblePlane);
   if (intersects.length === 0) return;
 
   const point = intersects[0].point.clone();
 
-  const radius = 1; // meters
-  xzVertices[0] = [point.x - radius, point.z + radius];
-  xzVertices[1] =[point.x + radius, point.z + radius];
-  xzVertices[2] =[point.x + radius, point.z - radius];
-  xzVertices[3] =[point.x - radius, point.z - radius];
+  // Update the highlight plane position in memory (for WebGL to consume)
+  // TODO: get vertices from highlighter.highlightPlane directly
+  xzVertices[0] = [point.x - highlighter.HIGHLIGHT_RADIUS, point.z + highlighter.HIGHLIGHT_RADIUS];
+  xzVertices[1] =[point.x + highlighter.HIGHLIGHT_RADIUS, point.z + highlighter.HIGHLIGHT_RADIUS];
+  xzVertices[2] =[point.x + highlighter.HIGHLIGHT_RADIUS, point.z - highlighter.HIGHLIGHT_RADIUS];
+  xzVertices[3] =[point.x - highlighter.HIGHLIGHT_RADIUS, point.z - highlighter.HIGHLIGHT_RADIUS];
+
+  // Move the highlight plane and cuboid to the new position
+  highlighter.setPosition(point.x, point.z);
+  
 })
 
 document.getElementById("rezoneButton")?.addEventListener('click', (e) => {
