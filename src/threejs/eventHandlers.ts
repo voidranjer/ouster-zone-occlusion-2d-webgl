@@ -92,12 +92,9 @@ window.addEventListener('mousemove', (event: MouseEvent) => {
   // Move the highlight plane and cuboid to the new position
   highlighter.setPosition(point.x, point.z);
   
-  // Update geometry to maintain consistent screen size
-  highlighter.updateGeometry(camera);
-  
-  // Get vertices from highlighter.highlightPlane after it's been positioned and resized
+  // Get vertices from highlighter.highlightPlane after it's been positioned
   const planePosition = highlighter.highlightPlane.position;
-  const radius = highlighter.HIGHLIGHT_RADIUS; // This is now the dynamic radius
+  const radius = highlighter.HIGHLIGHT_RADIUS;
   
   // Transform zone vertices from world coordinates to point cloud local coordinates
   const worldVertices = [

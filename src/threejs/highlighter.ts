@@ -6,8 +6,7 @@ export class Highlighter {
 
   // Configurable parameters
   PLANE_Y = -1.0;
-  HIGHLIGHT_RADIUS = 1.0; // Base radius - will be scaled based on camera distance
-  SCREEN_SPACE_SIZE = 50; // Target size in pixels for consistent appearance
+  HIGHLIGHT_RADIUS = 1.0;
   
   // Three.js objects
   scene: THREE.Scene;
@@ -30,57 +29,6 @@ export class Highlighter {
 
     this.cuboidWireframe = this.createCuboidWireframe(this.cuboid);
     this.scene.add(this.cuboidWireframe);
-  }
-
-  /**
-   * Calculate the world-space radius needed to maintain consistent screen size
-   */
-  calculateWorldRadius(camera: THREE.Camera, worldPosition: THREE.Vector3): number {
-    if (camera instanceof THREE.PerspectiveCamera) {
-      // For perspective camera, scale based on distance
-      const distance = camera.position.distanceTo(worldPosition);
-      const fov = camera.fov * Math.PI / 180; // Convert to radians
-      const screenHeight = 2 * Math.tan(fov / 2) * distance;
-      return (this.SCREEN_SPACE_SIZE / window.innerHeight) * screenHeight;
-    } else if (camera instanceof THREE.OrthographicCamera) {
-      // For orthographic camera, use zoom
-      const zoom = camera.zoom || 1;
-      const screenHeight = (camera.top - camera.bottom) / zoom;
-      return (this.SCREEN_SPACE_SIZE / window.innerHeight) * screenHeight;
-    }
-    
-    // Fallback to base radius
-    return this.HIGHLIGHT_RADIUS;
-  }
-
-  /**
-   * Update the highlight geometry based on camera position
-   */
-  updateGeometry(camera: THREE.Camera) {
-    const worldPosition = new THREE.Vector3(
-      this.highlightPlane.position.x,
-      this.PLANE_Y,
-      this.highlightPlane.position.z
-    );
-    
-    const dynamicRadius = this.calculateWorldRadius(camera, worldPosition);
-    
-    // Update highlight plane geometry
-    this.highlightPlane.geometry.dispose();
-    this.highlightPlane.geometry = new THREE.PlaneGeometry(2 * dynamicRadius, 2 * dynamicRadius);
-    
-    // Update cuboid geometry
-    const diameter = 2 * dynamicRadius;
-    this.cuboid.geometry.dispose();
-    this.cuboid.geometry = new THREE.BoxGeometry(diameter, Highlighter.CUBOID_HEIGHT, diameter);
-    
-    // Update wireframe
-    this.scene.remove(this.cuboidWireframe);
-    this.cuboidWireframe = this.createCuboidWireframe(this.cuboid);
-    this.scene.add(this.cuboidWireframe);
-    
-    // Store the current dynamic radius for use in event handlers
-    this.HIGHLIGHT_RADIUS = dynamicRadius;
   }
 
   setPosition(x: number, z: number) {
