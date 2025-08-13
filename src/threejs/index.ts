@@ -35,6 +35,13 @@ export const xzVertices: number[][] = [];
 export function render() {
   controls.update(); // required if enableDamping is true
   controls.enabled = localStorage.getItem('mode') !== 'edit';
+  
+  // Update highlighter geometry when camera moves (in highlight mode)
+  const mode = localStorage.getItem('mode');
+  if (mode === 'highlight') {
+    highlighter.updateGeometry(camera);
+  }
+  
   renderer.render(scene, camera);
 }
 
