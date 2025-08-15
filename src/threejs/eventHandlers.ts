@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { zoneLines, canvas, scene, renderer, camera, controls, raycaster, zoneVertices, xzVertices, updateExtrinsics, highlighter } from './index.ts';
+import { zoneLines, canvas, scene, renderer, camera, controls, raycaster, zoneVertices, xzVertices, updateExtrinsics, highlighter, pointCloud } from './index.ts';
 import { createLine, resetZone, updatePointColors, worldToLocalCoordinates } from "./utils"
 
 export const MAX_RANGE = 200; // 200m for OS-1-128
@@ -84,10 +84,15 @@ window.addEventListener('mousemove', (event: MouseEvent) => {
   const mouseY = -((event.clientY - rect.top) / rect.height) * 2 + 1;
   raycaster.setFromCamera(new THREE.Vector2(mouseX, mouseY), camera);
 
-  const intersects = raycaster.intersectObject(highlighter.invisiblePlane);
-  if (intersects.length === 0) return;
+  let point = new THREE.Vector3();
 
-  const point = intersects[0].point.clone();
+  const intersects = raycaster.intersectObject(pointCloud);
+  if (intersects.length !== 0) {
+    point.copy(intersects[0].point);
+  } else {
+    const intersectsPlane = raycaster.intersectObject(highlighter.invisiblePlane);
+    point.copy(intersectsPlane.length > 0 ? intersectsPlane[0].point : new THREE.Vector3(0, 0, 10000)) // Default far point if no intersection
+  }
 
   // Move the highlight plane and cuboid to the new position
   highlighter.setPosition(point.x, point.z);
@@ -110,7 +115,6 @@ window.addEventListener('mousemove', (event: MouseEvent) => {
   }
   
   updatePointColors(); // Update point colors when highlight moves
-  
 })
 
 document.getElementById("rezoneButton")?.addEventListener('click', (e) => {

@@ -22,6 +22,7 @@ export const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: tru
 // Singletons
 export const controls = new OrbitControls(camera, renderer.domElement);
 export const raycaster = new THREE.Raycaster();
+export let pointCloud: THREE.Points;
 export const extrinsicsHelper = new THREE.Group();
 export const highlighter: Highlighter = new Highlighter(scene);
 
@@ -78,6 +79,9 @@ export async function setup() {
   renderer.setPixelRatio(window.devicePixelRatio); // for retina displays
   camera.position.set(0, 30, 0);
 
+  // Raycaster config
+  raycaster.params.Points.threshold = 0.25;
+
   // Orbit controls
   controls.enableDamping = true; // smooth orbiting
   controls.dampingFactor = 0.05;
@@ -110,8 +114,8 @@ export async function setup() {
     size: POINTS_SIZE,
     sizeAttenuation: true,  // Enable size attenuation for perspective camera
   });
-  const points = new THREE.Points(geometry, material);
-  extrinsicsHelper.add(points);
+  pointCloud = new THREE.Points(geometry, material);
+  extrinsicsHelper.add(pointCloud);
 
   // Voxelization
   const voxelSize = 2; // 2 meters
