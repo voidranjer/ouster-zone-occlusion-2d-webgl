@@ -7,14 +7,8 @@
     <title>Experiment: Ghorman</title>
   </head>
   <body>
-    <div id="container">
-      <canvas id="webgl-canvas"></canvas>
-      <div class="flex absolute bottom-0 translate-y-1/2 transform self-center space-x-3">
-        <button id="rezoneButton" class="bg-blue-500 px-3 rounded-lg border-2 border-white cursor-pointer hover:bg-blue-400">Zone</button>
-        <button id="highlightButton" class="bg-red-500 px-3 rounded-lg border-2 border-white cursor-pointer hover:bg-red-400">Highlight</button>
-      </div>
-    </div>
-    
+    <div id="root"></div>
+
     <!-- Extrinsics Controls Panel -->
     <div id="extrinsics-panel" class="fixed left-4 top-1/2 transform -translate-y-1/2 bg-gray-800 bg-opacity-90 text-white p-4 rounded-lg shadow-lg w-64 z-10 pointer-events-none opacity-50">
       <h3 class="text-lg font-bold mb-4 text-center">Extrinsics Controls</h3>
@@ -82,7 +76,6 @@
       </div>
     </div>
     
-    <canvas id="threejs-canvas"></canvas>
-    <script type="module" src="/src/main.ts"></script>
+    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
