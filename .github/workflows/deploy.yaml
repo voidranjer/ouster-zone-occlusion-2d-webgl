@@ -1,7 +1,7 @@
 on:
   push:
     branches:
-      - "main" # change to the branch you wish to deploy from
+      - "main" # Change to the branch you wish to deploy from
 
 permissions:
   contents: read
@@ -12,8 +12,11 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-    - id: build-publish
-      uses: bitovi/github-actions-react-to-github-pages@v1.2.4
-      with:
-        path: dist # change to your build folder
-        caching: true
+      - id: build-publish
+        uses: bitovi/github-actions-react-to-github-pages@v1.2.4
+        with:
+          path: dist 
+          caching: true
+        env:
+          # Correctly set the base path using repo name
+          VITE_BASE_URL: /ouster-zone-occlusion-2d-webgl/
