@@ -1,81 +1,17 @@
 import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { fetchJsonFile } from '../lib/utils';
-import { Highlighter } from './highlighter';
+
+import { fetchJsonFile } from '@src/lib/utils';
+import { POINTS_SIZE } from '@src/lib/constants';
 import { resetZone } from './utils';
+import type { World3DProps } from './World3D';
 
-export const POINTS_SIZE = 0.1;
-// const POINTS_SIZE = 2;
+export async function setup3js(world3DProps: World3DProps) {
+  const {
+    singletons: { scene, camera, raycaster, pointCloud, extrinsicsHelper, highlighter },
+    state: { controls, renderer }
+  }: World3DProps = world3DProps;
+  if (!renderer || !controls) return;
 
-// Three.js essentials
-export const scene = new THREE.Scene();
-// export const camera = new THREE.OrthographicCamera();
-export const camera = new THREE.PerspectiveCamera(
-  75,
-  window.innerWidth / window.innerHeight,
-  0.1,
-  1000
-);
-export const canvas = document.getElementById('threejs-canvas')! as HTMLCanvasElement;
-export const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
-
-// Singletons
-export const controls = new OrbitControls(camera, renderer.domElement);
-export const raycaster = new THREE.Raycaster();
-export const pointCloud = new THREE.Points();
-export const extrinsicsHelper = new THREE.Group();
-export const highlighter: Highlighter = new Highlighter(scene);
-
-// State
-export const zoneVertices: THREE.Mesh[] = [];
-export const zoneLines: THREE.Line[] = [];
-export const xzVertices: number[][] = [];
-
-/* --- FUNCTIONS ---*/
-
-export function render() {
-  controls.update(); // required if enableDamping is true
-  controls.enabled = localStorage.getItem('mode') !== 'edit';
-  renderer.render(scene, camera);
-}
-
-export function updateExtrinsics(translation: { x: number, y: number, z: number }, rotation: { x: number, y: number, z: number }) {
-  if (!extrinsicsHelper) return;
-
-  // Save to localStorage
-  const extrinsicsData = {
-    translation,
-    rotation
-  };
-  localStorage.setItem('extrinsics', JSON.stringify(extrinsicsData));
-
-  // Reset the group's transformation
-  extrinsicsHelper.matrix.identity();
-  extrinsicsHelper.matrixAutoUpdate = false;
-
-  // Create new transformation matrix
-  const matrix = new THREE.Matrix4();
-
-  // Apply translation
-  const translationMatrix = new THREE.Matrix4().makeTranslation(translation.x, translation.y, translation.z);
-
-  // Apply rotations (in XYZ order)
-  const rotationMatrix = new THREE.Matrix4();
-  rotationMatrix.makeRotationFromEuler(new THREE.Euler(
-    THREE.MathUtils.degToRad(rotation.x),
-    THREE.MathUtils.degToRad(rotation.y),
-    THREE.MathUtils.degToRad(rotation.z),
-    'XYZ'
-  ));
-
-  // Combine transformations: Translation * Rotation
-  matrix.multiplyMatrices(translationMatrix, rotationMatrix);
-
-  // Apply the matrix to the group
-  extrinsicsHelper.applyMatrix4(matrix);
-}
-
-export async function setup() {
   renderer.setPixelRatio(window.devicePixelRatio); // for retina displays
   camera.position.set(0, 30, 0);
 
@@ -158,5 +94,18 @@ export async function setup() {
 
   // Initialize localStorage state
   localStorage.removeItem('mode');
-  resetZone();
+  resetZone(world3DProps);
+}
+
+
+export function render3js(world3DProps: World3DProps) {
+  const {
+    state: { controls, renderer },
+    singletons: { scene, camera, },
+  } = world3DProps;
+  if (!controls || !renderer) return;
+
+  controls.update(); // required if enableDamping is true
+  controls.enabled = localStorage.getItem('mode') !== 'edit';
+  renderer.render(scene, camera);
 }

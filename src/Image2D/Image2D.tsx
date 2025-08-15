@@ -10,6 +10,7 @@ export default function Image2D({ setGl }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   function handleResize() {
+    /* Using `canvas.getContext` to avoid having state in `window.addEventListener` */
     const canvas = canvasRef.current!;
     const gl = canvas.getContext('webgl2')!;
     resize(gl, canvas);
