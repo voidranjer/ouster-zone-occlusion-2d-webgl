@@ -24,7 +24,16 @@ export type World3DProps = {
     setZoneVertices: React.Dispatch<React.SetStateAction<THREE.Mesh[]>>,
     zoneLines: THREE.Line[],
     setZoneLines: React.Dispatch<React.SetStateAction<THREE.Line[]>>,
+    xzVertices: number[][],
     setXZVertices: React.Dispatch<React.SetStateAction<number[][]>>,
+    extrinsics: {
+      translation: { x: number, y: number, z: number },
+      rotation: { x: number, y: number, z: number },
+    },
+    setExtrinsics: React.Dispatch<React.SetStateAction<{
+      translation: { x: number, y: number, z: number },
+      rotation: { x: number, y: number, z: number },
+    }>>,
   }
 }
 
