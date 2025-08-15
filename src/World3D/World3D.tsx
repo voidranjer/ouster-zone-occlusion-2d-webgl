@@ -4,7 +4,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { useRef, useEffect, useCallback } from "react"
 
 import { Highlighter } from "./highlighter";
-import { resize } from "./eventHandlers";
+import { resize, handleMouseMove } from "./eventHandlers";
 
 export type World3DProps = {
   singletons: {
@@ -21,11 +21,8 @@ export type World3DProps = {
     controls: OrbitControls | null,
     setControls: React.Dispatch<React.SetStateAction<OrbitControls | null>>,
     zoneVertices: THREE.Mesh[],
-    setZoneVertices: React.Dispatch<React.SetStateAction<THREE.Mesh[]>>,
     zoneLines: THREE.Line[],
-    setZoneLines: React.Dispatch<React.SetStateAction<THREE.Line[]>>,
     xzVertices: number[][],
-    setXZVertices: React.Dispatch<React.SetStateAction<number[][]>>,
     extrinsics: {
       translation: { x: number, y: number, z: number },
       rotation: { x: number, y: number, z: number },
@@ -34,6 +31,8 @@ export type World3DProps = {
       translation: { x: number, y: number, z: number },
       rotation: { x: number, y: number, z: number },
     }>>,
+    appMode: "normal" | "edit" | "highlight",
+    setAppMode: React.Dispatch<React.SetStateAction<"normal" | "edit" | "highlight">>,
   }
 }
 
@@ -69,7 +68,11 @@ export default function World3D(props: World3DProps) {
   }, [handleResize])
 
   return (
-    <canvas ref={canvasRef} className="block w-full h-[calc(100vh-150px)]">
+    <canvas
+      ref={canvasRef}
+      className="block w-full h-[calc(100vh-150px)]"
+      onMouseMove={(event) => handleMouseMove(event, props)}
+    >
     </canvas>
   )
 }

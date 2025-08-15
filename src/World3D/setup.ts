@@ -7,8 +7,18 @@ import type { World3DProps } from './World3D';
 
 export async function setup3js(world3DProps: World3DProps) {
   const {
-    singletons: { scene, camera, raycaster, pointCloud, extrinsicsHelper, highlighter },
-    state: { controls, renderer }
+    singletons: {
+      scene,
+      camera,
+      raycaster,
+      pointCloud,
+      extrinsicsHelper,
+      highlighter,
+    },
+    state: {
+      controls,
+      renderer,
+    },
   }: World3DProps = world3DProps;
   if (!renderer || !controls) return;
 

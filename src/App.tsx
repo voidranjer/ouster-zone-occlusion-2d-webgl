@@ -36,13 +36,14 @@ export default function App() {
   const [gl, setGl] = useState<WebGL2RenderingContext | null>(null);
   const [renderer, setRenderer] = useState<THREE.WebGLRenderer | null>(null);
   const [controls, setControls] = useState<OrbitControls | null>(null);
-  const [zoneVertices, setZoneVertices] = useState<THREE.Mesh[]>([]); // Cube indicators for the zone vertices
-  const [zoneLines, setZoneLines] = useState<THREE.Line[]>([]); // Lines connecting the zone vertices
-  const [xzVertices, setXZVertices] = useState<number[][]>([]); // Three.js World XZ coordinates of the zone vertices
+  const zoneVertices = useMemo<THREE.Mesh[]>(() => [], []); // Cube indicators for the zone vertices
+  const zoneLines = useMemo<THREE.Line[]>(() => [], []); // Lines connecting the zone vertices
+  const xzVertices = useMemo<number[][]>(() => [], []); // Three.js World XZ coordinates of the zone vertices
   const [extrinsics, setExtrinsics] = useState({
     translation: { x: 0, y: 1, z: 0 },
     rotation: { x: 0, y: -2.5, z: -4.5 },
   });
+  const [appMode, setAppMode] = useState<"normal" | "edit" | "highlight">("normal");
 
   // Groups
   const singletons = {
@@ -59,13 +60,12 @@ export default function App() {
     controls,
     setControls,
     zoneVertices,
-    setZoneVertices,
     zoneLines,
-    setZoneLines,
     xzVertices,
-    setXZVertices,
     extrinsics,
     setExtrinsics,
+    appMode,
+    setAppMode,
   };
   const world3DProps = { singletons, state };
 
