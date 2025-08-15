@@ -147,6 +147,7 @@ export async function setup() {
   const box = new THREE.Mesh(boxGeometry, boxMaterial);
   box.position.set(0, 0, 0);
   extrinsicsHelper.add(box);
+  box.visible = false;
 
   // Create a grid helper
   const size = 200;      // 400 meters wide

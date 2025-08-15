@@ -29,6 +29,8 @@ export class Highlighter {
 
     this.cuboidWireframe = this.createCuboidWireframe(this.cuboid);
     this.scene.add(this.cuboidWireframe);
+
+    this.setPosition(0, 1000); // Initialize position
   }
 
   setPosition(x: number, z: number) {

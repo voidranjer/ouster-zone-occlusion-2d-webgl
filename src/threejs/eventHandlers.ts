@@ -91,7 +91,7 @@ window.addEventListener('mousemove', (event: MouseEvent) => {
     point.copy(intersects[0].point);
   } else {
     const intersectsPlane = raycaster.intersectObject(highlighter.invisiblePlane);
-    point.copy(intersectsPlane.length > 0 ? intersectsPlane[0].point : new THREE.Vector3(0, 0, 10000)) // Default far point if no intersection
+    point.copy(intersectsPlane.length > 0 ? intersectsPlane[0].point : new THREE.Vector3(0, 0, 1000)) // Default far point if no intersection
   }
 
   // Move the highlight plane and cuboid to the new position
