@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { updateExtrinsics } from '@src/World3D';
 
 export default function ExtrinsicsControls() {
-    const [extrinsics, setExtrinsics] = useState({
+    const [extrinsics, _] = useState({
     translation: { x: 0, y: 1, z: 0 },
     rotation: { x: 0, y: -2.5, z: -4.5 },
   });
