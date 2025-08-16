@@ -16,16 +16,16 @@ export async function initializeZoneProgram(gl: WebGL2RenderingContext) {
 
   return {
     zoneProgram,
-    zoneVao
+    zoneVao,
+    zoneVbo
   }
 }
 
-export function renderZone(gl: WebGL2RenderingContext, program: WebGLProgram, vao: WebGLVertexArrayObject) {
-  gl.useProgram(program);
-  gl.bindVertexArray(vao);
+export function renderZone(gl: WebGL2RenderingContext, program: WebGLProgram, vao: WebGLVertexArrayObject, vbo: WebGLBuffer) {
+  if (xzVertices.length === 0) return;
 
   const skyscrapers: number[][] = [];
-  
+
   xzVertices.forEach(anchor => {
     const clipSpaceAnchor = xzToClipSpace(anchor[0], anchor[1]);
     skyscrapers.push([clipSpaceAnchor[0], -1, clipSpaceAnchor[1]]);
@@ -34,6 +34,12 @@ export function renderZone(gl: WebGL2RenderingContext, program: WebGLProgram, va
 
   const zoneVertices = new Float32Array(skyscrapers.flat());
 
-  gl.bufferData(gl.ARRAY_BUFFER, zoneVertices, gl.DYNAMIC_DRAW); // TODO: bad practice. minimize copying to VBO from RAM (move out of animate func)
+  // Important: Explicitly bind the VBO buffer before uploading data
+  gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
+  gl.bufferData(gl.ARRAY_BUFFER, zoneVertices, gl.DYNAMIC_DRAW);
+  
+  // Important: Explicitly bind the VAO before drawing
+  gl.bindVertexArray(vao);
+  gl.useProgram(program);
   gl.drawArrays(gl.LINES, 0, skyscrapers.length);
 }

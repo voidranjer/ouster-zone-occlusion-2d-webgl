@@ -3,16 +3,20 @@ import { handleResize } from "./eventHandlers";
 import { initializePointsProgram, renderPoints } from "./points";
 import { initializeZoneProgram, renderZone } from "./zone";
 
-export const canvas = document.getElementById("image2d-canvas") as HTMLCanvasElement;
-export const gl = canvas.getContext("webgl2")!;
 
 export async function start() {
+  const canvas = document.getElementById("image2d-canvas") as HTMLCanvasElement;
+  const gl = canvas.getContext("webgl2")!;
+
   const { pointsProgram, pointsVao } = await initializePointsProgram(gl);
-  const { zoneProgram, zoneVao } = await initializeZoneProgram(gl);
+  const { zoneProgram, zoneVao, zoneVbo } = await initializeZoneProgram(gl);
 
   gl.enable(gl.DEPTH_TEST);
   
-  handleResize();
+  handleResize(gl, canvas);
+  window.addEventListener("resize", () => {
+  handleResize(gl, canvas);
+});
 
   function animate() {
     // Clear background
@@ -20,7 +24,7 @@ export async function start() {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
     renderPoints(gl, pointsProgram, pointsVao);
-    renderZone(gl, zoneProgram, zoneVao);
+    renderZone(gl, zoneProgram, zoneVao, zoneVbo);
     render3js();
     requestAnimationFrame(animate);
   }

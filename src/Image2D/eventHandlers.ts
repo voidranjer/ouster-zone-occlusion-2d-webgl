@@ -1,11 +1,5 @@
-import { canvas, gl } from "./Image2D";
-
-export function handleResize() {
+export function handleResize(gl: WebGL2RenderingContext, canvas: HTMLCanvasElement) {
   canvas.width = canvas.clientWidth;
   canvas.height = canvas.clientHeight;
   gl.viewport(0, 0, gl.drawingBufferWidth, gl.drawingBufferHeight);
 }
-
-window.addEventListener("resize", () => {
-  handleResize();
-});

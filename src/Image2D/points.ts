@@ -48,17 +48,13 @@ export async function initializePointsProgram(gl: WebGL2RenderingContext) {
 }
 
 export function renderPoints(gl: WebGL2RenderingContext, program: WebGLProgram, vao: WebGLVertexArrayObject) {
-  let xzVerticesLocation: WebGLUniformLocation | null;
-
-  // Point Cloud
   gl.useProgram(program);
+  
   if (xzVertices.length === NUM_ZONE_VERTICES) {
-    xzVerticesLocation = gl.getUniformLocation(program, "u_xzVertices");
-    gl.uniform2fv(
-      xzVerticesLocation,
-      new Float32Array(xzVertices.flat())
-    );
+    const xzVerticesLocation = gl.getUniformLocation(program, "u_xzVertices");
+    gl.uniform2fv(xzVerticesLocation, new Float32Array(xzVertices.flat()));
   }
+
   gl.bindVertexArray(vao);
   gl.drawArrays(gl.POINTS, 0, NUM_PIXELS);
 }

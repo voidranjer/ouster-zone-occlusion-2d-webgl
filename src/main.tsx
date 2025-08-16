@@ -5,7 +5,6 @@ import './index.css'
 import App from './App.tsx'
 
 import { setup3js } from './World3D'
-import { start } from './Image2D'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -14,4 +13,3 @@ createRoot(document.getElementById('root')!).render(
 )
 
 setup3js();
-start();
