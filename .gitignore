@@ -25,4 +25,4 @@ dist-ssr
 
 # Ouster
 *.pcap
-*.json
+public/data/*.json

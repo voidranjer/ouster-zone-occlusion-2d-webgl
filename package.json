@@ -1,22 +1,34 @@
 {
-  "name": "ghorman",
+  "name": "ouster-zone-occlusion-2d-webgl",
   "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "tsc -b && vite build",
+    "lint": "eslint .",
     "preview": "vite preview"
   },
-  "devDependencies": {
-    "@types/node": "^24.3.0",
-    "@types/three": "^0.178.1",
-    "typescript": "~5.8.3",
-    "vite": "^7.0.4"
-  },
   "dependencies": {
-    "@tailwindcss/vite": "^4.1.11",
-    "tailwindcss": "^4.1.11",
-    "three": "^0.178.0"
+    "@tailwindcss/vite": "^4.1.12",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "tailwindcss": "^4.1.12",
+    "three": "^0.179.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.33.0",
+    "@types/node": "^24.3.0",
+    "@types/react": "^19.1.10",
+    "@types/react-dom": "^19.1.7",
+    "@types/three": "^0.179.0",
+    "@vitejs/plugin-react": "^5.0.0",
+    "eslint": "^9.33.0",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "eslint-plugin-react-refresh": "^0.4.20",
+    "globals": "^16.3.0",
+    "typescript": "~5.8.3",
+    "typescript-eslint": "^8.39.1",
+    "vite": "^7.1.2"
   }
 }

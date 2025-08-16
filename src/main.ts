@@ -51,14 +51,14 @@ async function main() {
 
   const vboIndex2D = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, vboIndex2D);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(Array.from({length: NUM_PIXELS}, (_, idx) => idx)), gl.STATIC_DRAW);
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(Array.from({ length: NUM_PIXELS }, (_, idx) => idx)), gl.STATIC_DRAW);
 
   gl.vertexAttribPointer(2, 1, gl.FLOAT, false, FLOAT32_SIZE * 1, 0);
   gl.enableVertexAttribArray(2);
 
   const vboRange = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, vboRange);
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(rangePayload.map(measurement => 
+  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(rangePayload.map(measurement =>
     (measurement === -1) ? -2 : measurement // cull zero values (infinite distance)
   )), gl.STATIC_DRAW);
   gl.vertexAttribPointer(3, 1, gl.FLOAT, false, FLOAT32_SIZE * 1, 0);
@@ -108,6 +108,7 @@ async function main() {
     gl.bufferData(gl.ARRAY_BUFFER, zoneVertices, gl.DYNAMIC_DRAW); // TODO: bad practice. minimize copying to VBO from RAM (move out of animate func)
     gl.drawArrays(gl.LINES, 0, skyscrapers.length);
 
+    // TODO: global animate that calls 2danimate and 3jsanimate
     render();
     requestAnimationFrame(animate);
   }
