@@ -1,5 +1,6 @@
-import { FLOAT32_SIZE, NUM_PIXELS } from '@src/lib/constants';
+import { FLOAT32_SIZE, NUM_PIXELS, NUM_ZONE_VERTICES } from '@src/lib/constants';
 import { compileShader, createProgram, fetchJsonFile } from '@src/lib/utils';
+import { xzVertices } from '@src/World3D';
 
 export async function initializePointsProgram(gl: WebGL2RenderingContext) {
   const pointsVertexShader = await compileShader(gl, 'shaders/points.vert', gl.VERTEX_SHADER);
@@ -47,35 +48,17 @@ export async function initializePointsProgram(gl: WebGL2RenderingContext) {
 }
 
 export function renderPoints(gl: WebGL2RenderingContext, program: WebGLProgram, vao: WebGLVertexArrayObject) {
-  // Clear background
-  gl.clearColor(0, 0, 0, 1);
-  gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
   let xzVerticesLocation: WebGLUniformLocation | null;
 
   // Point Cloud
   gl.useProgram(program);
-  // if (xzVertices.length === NUM_ZONE_VERTICES) {
-  //   xzVerticesLocation = gl.getUniformLocation(program, "u_xzVertices");
-  //   gl.uniform2fv(
-  //     xzVerticesLocation,
-  //     new Float32Array(xzVertices.flat())
-  //   );
-  // }
+  if (xzVertices.length === NUM_ZONE_VERTICES) {
+    xzVerticesLocation = gl.getUniformLocation(program, "u_xzVertices");
+    gl.uniform2fv(
+      xzVerticesLocation,
+      new Float32Array(xzVertices.flat())
+    );
+  }
   gl.bindVertexArray(vao);
   gl.drawArrays(gl.POINTS, 0, NUM_PIXELS);
-
-  // // Zones
-  // gl.useProgram(zoneProgram);
-  // gl.bindVertexArray(zoneVao);
-  // const skyscrapers: number[][] = [];
-  // xzVertices.forEach(anchor => {
-  //   const clipSpaceAnchor = xzToClipSpace(anchor[0], anchor[1]);
-  //   skyscrapers.push([clipSpaceAnchor[0], -1, clipSpaceAnchor[1]]);
-  //   skyscrapers.push([clipSpaceAnchor[0], 1, clipSpaceAnchor[1]]);
-  // });
-  // const zoneVertices = new Float32Array(skyscrapers.flat());
-  // gl.bufferData(gl.ARRAY_BUFFER, zoneVertices, gl.DYNAMIC_DRAW); // TODO: bad practice. minimize copying to VBO from RAM (move out of animate func)
-  // gl.drawArrays(gl.LINES, 0, skyscrapers.length);
 }
-

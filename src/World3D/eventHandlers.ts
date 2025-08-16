@@ -59,7 +59,7 @@ window.addEventListener("mousemove", (event: MouseEvent) => {
     point.copy(
       intersectsPlane.length > 0
         ? intersectsPlane[0].point
-        : new THREE.Vector3(0, 0, 1000)
+        : new THREE.Vector3(10000, 0, 10000)
     ); // Default far point if no intersection
   }
 
