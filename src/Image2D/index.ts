@@ -1,3 +1,3 @@
-import Image2D from './Image2D';
+import { start } from "./Image2D";
 
-export default Image2D;
+export { start };

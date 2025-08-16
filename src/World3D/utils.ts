@@ -1,11 +1,10 @@
 import * as THREE from "three";
 
 import { MAX_RANGE } from "@src/lib/constants";
-import type { World3DProps } from "./World3D";
+import { extrinsicsHelper } from "./World3D";
 
 // Helper function to reverse extrinsics and convert world coordinates to local coordinates
 export function worldToLocalCoordinates(
-  extrinsicsHelper: THREE.Group,
   worldX: number,
   worldZ: number
 ): [number, number] {
@@ -38,73 +37,10 @@ export function isPointInPolygon(
   return inside;
 }
 
-// Function to update point colors based on zones
-export function updatePointColors(
-  pointCloud: THREE.Points,
-  xzVertices: number[][]
-) {
-  const positions = pointCloud.geometry.getAttribute(
-    "position"
-  ) as THREE.BufferAttribute;
-  const colors = pointCloud.geometry.getAttribute(
-    "color"
-  ) as THREE.BufferAttribute;
-
-  // Store original colors if not already stored
-  if (!pointCloud.originalColors) {
-    pointCloud.originalColors = colors.array.slice();
-  }
-  const originalColors = pointCloud.originalColors;
-
-  // Reset to original colors first
-  colors.array.set(originalColors);
-
-  // Check each point against zone vertices (both now in local coordinates)
-  for (let i = 0; i < positions.count; i++) {
-    const x = positions.getX(i);
-    const z = positions.getZ(i);
-
-    // Point-in-polygon test using xzVertices (now in local coordinates)
-    if (xzVertices.length >= 3 && isPointInPolygon(x, z, xzVertices)) {
-      // Blend with original color like the shader: keep red channel, add green
-      const originalR = originalColors[i * 3];
-      colors.setXYZ(i, originalR, 0.5, 0);
-    }
-  }
-
-  colors.needsUpdate = true;
-}
-
 export function createLine(p1: THREE.Vector3, p2: THREE.Vector3): THREE.Line {
   const geometry = new THREE.BufferGeometry().setFromPoints([p1, p2]);
   const material = new THREE.LineBasicMaterial({ color: 0xff0000 });
   return new THREE.Line(geometry, material);
-}
-
-export function resetZone(world3DProps: World3DProps) {
-  const {
-    state: { xzVertices, zoneVertices, zoneLines },
-    singletons: { pointCloud },
-  } = world3DProps;
-
-  let xzVertex = xzVertices.pop();
-  while (xzVertex !== undefined) {
-    xzVertex = xzVertices.pop();
-  }
-
-  let vertex = zoneVertices.pop();
-  while (vertex !== undefined) {
-    vertex.removeFromParent();
-    vertex = zoneVertices.pop();
-  }
-
-  let line = zoneLines.pop();
-  while (line !== undefined) {
-    line.removeFromParent();
-    line = zoneLines.pop();
-  }
-
-  updatePointColors(pointCloud, []); // Reset point colors when zone is cleared
 }
 
 // Converts world X/Z coordinates (post-extrinsics in 3js) to clip space (WebGL) coordinates

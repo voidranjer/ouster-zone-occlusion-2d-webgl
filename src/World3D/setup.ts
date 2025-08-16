@@ -2,26 +2,11 @@ import * as THREE from 'three';
 
 import { fetchJsonFile } from '@src/lib/utils';
 import { POINTS_SIZE } from '@src/lib/constants';
-import { resetZone } from './utils';
-import type { World3DProps } from './World3D';
+import { resetZone } from './updators';
+import { camera, controls, extrinsicsHelper, highlighter, pointCloud, raycaster, renderer, scene } from './World3D';
+import {handleResize} from './eventHandlers';
 
-export async function setup3js(world3DProps: World3DProps) {
-  const {
-    singletons: {
-      scene,
-      camera,
-      raycaster,
-      pointCloud,
-      extrinsicsHelper,
-      highlighter,
-    },
-    state: {
-      controls,
-      renderer,
-    },
-  }: World3DProps = world3DProps;
-  if (!renderer || !controls) return;
-
+export async function setup3js() {
   renderer.setPixelRatio(window.devicePixelRatio); // for retina displays
   camera.position.set(0, 30, 0);
 
@@ -102,19 +87,12 @@ export async function setup3js(world3DProps: World3DProps) {
   gridHelper.position.y = highlighter.PLANE_Y;  // position at the same Y level as before
   scene.add(gridHelper);
 
-  // Initialize localStorage state
-  localStorage.removeItem('mode');
-  resetZone(world3DProps);
+  resetZone();
+  handleResize();
 }
 
 
-export function render3js(world3DProps: World3DProps) {
-  const {
-    state: { controls, renderer },
-    singletons: { scene, camera, },
-  } = world3DProps;
-  if (!controls || !renderer) return;
-
+export function render3js() {
   controls.update(); // required if enableDamping is true
   controls.enabled = localStorage.getItem('mode') !== 'edit';
   renderer.render(scene, camera);

@@ -1,42 +1,15 @@
-import * as THREE from 'three';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
-import { type World3DProps } from '@src/World3D';
+import { updateExtrinsics } from '@src/World3D';
 
-export default function ExtrinsicsControls(
-  { world3DProps:
-    { singletons: { extrinsicsHelper },
-      state: { extrinsics } }
-  }: { world3DProps: World3DProps }
-) {
+export default function ExtrinsicsControls() {
+    const [extrinsics, setExtrinsics] = useState({
+    translation: { x: 0, y: 1, z: 0 },
+    rotation: { x: 0, y: -2.5, z: -4.5 },
+  });
 
   useEffect(() => {
-    const { translation, rotation } = extrinsics;
-
-    // Reset the group's transformation
-    extrinsicsHelper.matrix.identity();
-    extrinsicsHelper.matrixAutoUpdate = false;
-
-    // Create new transformation matrix
-    const matrix = new THREE.Matrix4();
-
-    // Apply translation
-    const translationMatrix = new THREE.Matrix4().makeTranslation(translation.x, translation.y, translation.z);
-
-    // Apply rotations (in XYZ order)
-    const rotationMatrix = new THREE.Matrix4();
-    rotationMatrix.makeRotationFromEuler(new THREE.Euler(
-      THREE.MathUtils.degToRad(rotation.x),
-      THREE.MathUtils.degToRad(rotation.y),
-      THREE.MathUtils.degToRad(rotation.z),
-      'XYZ'
-    ));
-
-    // Combine transformations: Translation * Rotation
-    matrix.multiplyMatrices(translationMatrix, rotationMatrix);
-
-    // Apply the matrix to the group
-    extrinsicsHelper.applyMatrix4(matrix);
+    updateExtrinsics(extrinsics);
   }, [extrinsics])
 
   return <>

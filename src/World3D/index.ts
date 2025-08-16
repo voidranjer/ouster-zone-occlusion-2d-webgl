@@ -1,4 +1,5 @@
-import World3D, { type World3DProps } from "./World3D";
+import { setup3js, render3js } from "./setup";
+import { appState } from "./World3D";
+import { updateExtrinsics } from "./updators";
 
-export type { World3DProps };
-export default World3D;
+export { setup3js, render3js, appState, updateExtrinsics };

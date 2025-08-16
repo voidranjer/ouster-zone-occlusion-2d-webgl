@@ -1,15 +1,20 @@
 import * as THREE from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
-import { type World3DProps } from "./World3D";
-import { worldToLocalCoordinates, updatePointColors } from "./utils";
+import { worldToLocalCoordinates } from "./utils";
+import { updatePointColors } from "./updators";
+import {
+  camera,
+  canvas,
+  controls,
+  highlighter,
+  pointCloud,
+  raycaster,
+  renderer,
+  xzVertices,
+  appState,
+} from "./World3D";
 
-export function resize(
-  canvas: HTMLCanvasElement,
-  renderer: THREE.WebGLRenderer,
-  camera: THREE.PerspectiveCamera,
-  controls: OrbitControls
-) {
+export function handleResize() {
   const width = canvas.clientWidth;
   const height = canvas.clientHeight;
   const aspect = width / height;
@@ -29,26 +34,12 @@ export function resize(
   controls.update();
 }
 
-export function handleMouseMove(
-  event: React.MouseEvent<HTMLCanvasElement>,
-  world3DProps: World3DProps
-) {
-  const {
-    singletons: {
-      camera,
-      raycaster,
-      highlighter,
-      pointCloud,
-      extrinsicsHelper,
-    },
-    state: {
-      xzVertices,
-      renderer,
-      appMode,
-    },
-  } = world3DProps;
-  if (!renderer || !camera || !raycaster || !highlighter) return;
-  if (appMode !== "highlight") return;
+window.addEventListener("resize", () => {
+  handleResize();
+});
+
+window.addEventListener("mousemove", (event: MouseEvent) => {
+  if (appState.mode !== "highlight") return;
 
   // Raycasting to find intersection with the plane
   const rect = renderer.domElement.getBoundingClientRect();
@@ -89,11 +80,10 @@ export function handleMouseMove(
 
   for (let i = 0; i < 4; i++) {
     const [localX, localZ] = worldToLocalCoordinates(
-      extrinsicsHelper,
       worldVertices[i][0],
       worldVertices[i][1]
     );
     xzVertices[i] = [localX, localZ];
   }
-  updatePointColors(pointCloud, xzVertices); // Update point colors when highlight moves
-}
+  updatePointColors(); // Update point colors when highlight moves
+});

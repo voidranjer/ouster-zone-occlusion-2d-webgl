@@ -1,36 +1,21 @@
-import { useEffect, useRef } from "react";
+import { render3js } from "@src/World3D";
+import { handleResize } from "./eventHandlers";
+import { initializePointsProgram, renderPoints } from "./points";
 
-import { resize } from './eventHandlers.ts';
+export const canvas = document.getElementById("image2d-canvas") as HTMLCanvasElement;
+export const gl = canvas.getContext("webgl2")!;
 
-type Props = {
-  setGl: React.Dispatch<React.SetStateAction<WebGL2RenderingContext | null>>;
-}
+export async function start() {
+  const { pointsProgram, pointsVao } = await initializePointsProgram(gl);
 
-export default function Image2D({ setGl }: Props) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
+  gl.enable(gl.DEPTH_TEST);
+  
+  handleResize();
 
-  function handleResize() {
-    /* Using `canvas.getContext` to avoid having state in `window.addEventListener` */
-    const canvas = canvasRef.current!;
-    const gl = canvas.getContext('webgl2')!;
-    resize(gl, canvas);
+  function animate() {
+    renderPoints(gl, pointsProgram, pointsVao);
+    render3js();
+    requestAnimationFrame(animate);
   }
-
-  useEffect(() => {
-    const canvas = canvasRef.current!;
-
-    setGl(canvas.getContext('webgl2')!);
-
-    handleResize(); // Initial resize to set canvas size
-    window.addEventListener('resize', handleResize);
-
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    }
-  }, [])
-
-  return (
-    <canvas ref={canvasRef} className="block w-full h-[150px] border-b-2 border-white">
-    </canvas>
-  )
+  animate();
 }

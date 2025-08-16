@@ -1,10 +1,15 @@
-import { type World3DProps } from "@src/World3D/World3D";
+import { useEffect, useState } from "react";
 
-export default function Controls({ 
-  world3DProps: {
-    state: { appMode, setAppMode }
-  },
- }: { world3DProps: World3DProps }) {
+import type { AppMode } from "@src/lib/types";
+import { appState } from "@src/World3D";
+
+export default function Controls() {
+  const [appMode, setAppMode] = useState<AppMode>("normal");
+
+  useEffect(() => {
+      appState.mode = appMode;
+  }, [appMode]);
+
   return (
     <div className="flex absolute bottom-0 translate-y-1/2 transform self-center space-x-3">
       <button className="bg-blue-500 px-3 rounded-lg border-2 border-white cursor-pointer hover:bg-blue-400">
