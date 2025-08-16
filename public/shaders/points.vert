@@ -40,7 +40,7 @@ void main() {
   float y = -1.0 * normalizeToMinusOneToOne(int(a_index) / NUM_COLS, 0, NUM_ROWS - 1);
 
   gl_Position = vec4(x, y, a_range, 1.0);
-  gl_PointSize = 2.0; // TODO: make this dynamic based on canvas size (from uniform)
+  gl_PointSize = 3.5; // TODO: make this dynamic based on canvas size (from uniform)
 
   vec2 point = vec2(a_position.x, a_position.z);
 

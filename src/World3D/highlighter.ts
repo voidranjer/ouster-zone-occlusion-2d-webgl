@@ -7,7 +7,7 @@ export class Highlighter {
   // Configurable parameters
   PLANE_Y = -1.0;
   HIGHLIGHT_RADIUS = 1.0;
-  
+
   // Three.js objects
   scene: THREE.Scene;
   invisiblePlane: THREE.Mesh;
@@ -42,7 +42,10 @@ export class Highlighter {
   }
 
   createInvisiblePlane() {
-    const planeGeometry = new THREE.PlaneGeometry(Highlighter.INVIS_PLANE_SIZE, Highlighter.INVIS_PLANE_SIZE);
+    const planeGeometry = new THREE.PlaneGeometry(
+      Highlighter.INVIS_PLANE_SIZE,
+      Highlighter.INVIS_PLANE_SIZE
+    );
     const planeMaterial = new THREE.MeshBasicMaterial({
       color: 0xffffff,
       opacity: 0,
@@ -56,40 +59,53 @@ export class Highlighter {
   }
 
   createHighlightPlane() {
-      const planeGeometry = new THREE.PlaneGeometry(2 * this.HIGHLIGHT_RADIUS, 2 * this.HIGHLIGHT_RADIUS);
-      const planeMaterial = new THREE.MeshBasicMaterial({
-        color: 0x00ff00,
-        side: THREE.DoubleSide,
-        transparent: true,
-        opacity: 0.5,
-        visible: true,  // keep highlight plane invisible until needed
-      });
-      const plane = new THREE.Mesh(planeGeometry, planeMaterial);
-      plane.rotation.x = -Math.PI / 2;  // rotate to horizontal (XZ)
-      plane.position.y = this.PLANE_Y;
-      return plane;
+    const planeGeometry = new THREE.PlaneGeometry(
+      2 * this.HIGHLIGHT_RADIUS,
+      2 * this.HIGHLIGHT_RADIUS
+    );
+    const planeMaterial = new THREE.MeshBasicMaterial({
+      color: 0x00ff00,
+      side: THREE.DoubleSide,
+      transparent: true,
+      opacity: 0.5,
+      visible: true, // keep highlight plane invisible until needed
+    });
+    const plane = new THREE.Mesh(planeGeometry, planeMaterial);
+    plane.rotation.x = -Math.PI / 2; // rotate to horizontal (XZ)
+    plane.position.y = this.PLANE_Y;
+    return plane;
   }
 
   createCuboid() {
-      // Create tall transparent cuboid with green edges
-      const diameter = 2 * this.HIGHLIGHT_RADIUS;
-      const cuboidGeometry = new THREE.BoxGeometry(diameter, Highlighter.CUBOID_HEIGHT, diameter); // width, height, depth
-      const cuboidMaterial = new THREE.MeshBasicMaterial({
-        color: 0xffffff,
-        transparent: true,
-        opacity: 0,
-        visible: true,
-      });
-      const cuboid = new THREE.Mesh(cuboidGeometry, cuboidMaterial);
-      cuboid.position.set(0, this.PLANE_Y + 100, 0); // position so base starts at PLANE_Y
-      return cuboid;
+    // Create tall transparent cuboid with green edges
+    const diameter = 2 * this.HIGHLIGHT_RADIUS;
+    const cuboidGeometry = new THREE.BoxGeometry(
+      diameter,
+      Highlighter.CUBOID_HEIGHT,
+      diameter
+    ); // width, height, depth
+    const cuboidMaterial = new THREE.MeshBasicMaterial({
+      color: 0xffffff,
+      transparent: true,
+      opacity: 0,
+      visible: true,
+    });
+    const cuboid = new THREE.Mesh(cuboidGeometry, cuboidMaterial);
+    cuboid.position.set(0, this.PLANE_Y + 100, 0); // position so base starts at PLANE_Y
+    return cuboid;
   }
 
   createCuboidWireframe(cuboid: THREE.Mesh) {
-  const edges = new THREE.EdgesGeometry(cuboid.geometry);
-  const edgeMaterial = new THREE.LineBasicMaterial({ color: 0x00ff00 }); // bright green
-  const wireframe = new THREE.LineSegments(edges, edgeMaterial);
-  wireframe.position.copy(cuboid.position);
-  return wireframe;
-}
+    const edges = new THREE.EdgesGeometry(cuboid.geometry);
+    const edgeMaterial = new THREE.LineBasicMaterial({ color: 0x00ff00 }); // bright green
+    const wireframe = new THREE.LineSegments(edges, edgeMaterial);
+    wireframe.position.copy(cuboid.position);
+    return wireframe;
+  }
+
+  setVisible(visible: boolean) {
+    this.highlightPlane.visible = visible;
+    this.cuboid.visible = visible;
+    this.cuboidWireframe.visible = visible;
+  }
 }

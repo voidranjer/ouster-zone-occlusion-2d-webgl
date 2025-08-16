@@ -53,6 +53,9 @@ export function renderPoints(gl: WebGL2RenderingContext, program: WebGLProgram, 
   if (xzVertices.length === NUM_ZONE_VERTICES) {
     const xzVerticesLocation = gl.getUniformLocation(program, "u_xzVertices");
     gl.uniform2fv(xzVerticesLocation, new Float32Array(xzVertices.flat()));
+  } else {
+    const xzVerticesLocation = gl.getUniformLocation(program, "u_xzVertices");
+    gl.uniform2fv(xzVerticesLocation, new Float32Array(Array(NUM_ZONE_VERTICES * 2).fill(0)));
   }
 
   gl.bindVertexArray(vao);

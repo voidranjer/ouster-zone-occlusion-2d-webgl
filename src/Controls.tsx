@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
 
 import type { AppMode } from "@src/lib/types";
-import { appState, resetZone } from "@src/World3D";
+import { appState, resetZone, highlighter } from "@src/World3D";
 
 export default function Controls() {
   const [appMode, setAppMode] = useState<AppMode>("normal");
 
   useEffect(() => {
     appState.mode = appMode;
+    highlighter.setVisible(appMode === "highlight");
   }, [appMode]);
 
   return (
@@ -26,6 +27,7 @@ export default function Controls() {
         className="bg-red-500 px-3 rounded-lg border-2 border-white cursor-pointer hover:bg-red-400"
         onClick={(e) => {
           e.stopPropagation();
+          resetZone();
           setAppMode(appMode === "highlight" ? "normal" : "highlight");
         }}
       >
