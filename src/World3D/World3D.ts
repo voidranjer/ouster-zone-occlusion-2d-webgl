@@ -4,7 +4,6 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 // import { useRef, useEffect, useCallback } from "react"
 
 import { Highlighter } from "./highlighter";
-import type { AppState } from "@src/lib/types";
 // import { resize, handleMouseMove } from "./eventHandlers";
 
 // Three.js essentials
@@ -32,7 +31,6 @@ export const highlighter = new Highlighter(scene);
 export const zoneVertices: THREE.Mesh[] = []; // Cube indicators for the zone vertices
 export const zoneLines: THREE.Line[] = []; // Lines connecting the zone vertices
 export const xzVertices: number[][] = []; //  World XZ coordinates of the zone vertices
-export const appState: AppState = { mode: "normal" };
 
 // export default function World3D(props: World3DProps) {
 //   const {

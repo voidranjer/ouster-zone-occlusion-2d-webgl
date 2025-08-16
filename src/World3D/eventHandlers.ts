@@ -11,12 +11,12 @@ import {
   raycaster,
   renderer,
   xzVertices,
-  appState,
   zoneVertices,
   scene,
   zoneLines,
 } from "./World3D";
 import { NUM_ZONE_VERTICES } from "@src/lib/constants";
+import type { ExtendedWindow } from "@src/lib/types";
 
 export function handleResize() {
   const width = canvas.clientWidth;
@@ -43,7 +43,7 @@ window.addEventListener("resize", () => {
 });
 
 window.addEventListener("mousemove", (event: MouseEvent) => {
-  if (appState.mode !== "highlight") return;
+  if ((window as ExtendedWindow).appState.mode !== "highlight") return;
 
   // Raycasting to find intersection with the plane
   const rect = renderer.domElement.getBoundingClientRect();
@@ -93,7 +93,7 @@ window.addEventListener("mousemove", (event: MouseEvent) => {
 });
 
 window.addEventListener('click', (event: MouseEvent) => {
-  if (appState.mode !== "edit") return;
+  if ((window as ExtendedWindow).appState.mode !== "edit") return;
 
   if (zoneVertices.length >= NUM_ZONE_VERTICES) return; // Stop after 4 points
 
@@ -107,7 +107,7 @@ window.addEventListener('click', (event: MouseEvent) => {
   if (intersects.length === 0) return;
 
   const point = intersects[0].point.clone();
-  
+
   // Transform the world coordinate point to local coordinates for xzVertices
   const [localX, localZ] = worldToLocalCoordinates(point.x, point.z);
   xzVertices.push([localX, localZ]);
@@ -135,7 +135,7 @@ window.addEventListener('click', (event: MouseEvent) => {
     scene.add(line);
     zoneLines.push(line);
 
-    appState.mode = "normal"; // Switch back to normal mode after completing the zone
+    (window as ExtendedWindow).setAppState({ mode: "normal" }); // Switch back to normal mode after completing the zone
     updatePointColors(); // Update point colors when zone is complete
   }
 });
