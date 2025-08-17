@@ -16,7 +16,7 @@ export async function setup3js() {
   // Orbit controls
   // controls.enableDamping = true; // smooth orbiting
   // controls.dampingFactor = 0.05;
-  // controls.screenSpacePanning = false;
+  controls.screenSpacePanning = false;
   controls.maxPolarAngle = Math.PI / 2;
 
   // Helper to apply sensor extrinsics to point cloud and sensor wireframe
