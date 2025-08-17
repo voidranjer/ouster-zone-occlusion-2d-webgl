@@ -14,8 +14,8 @@ export async function setup3js() {
   raycaster.params.Points.threshold = 0.25;
 
   // Orbit controls
-  controls.enableDamping = true; // smooth orbiting
-  controls.dampingFactor = 0.05;
+  // controls.enableDamping = true; // smooth orbiting
+  // controls.dampingFactor = 0.05;
   // controls.screenSpacePanning = false;
   controls.maxPolarAngle = Math.PI / 2;
 

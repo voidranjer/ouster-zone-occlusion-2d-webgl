@@ -1,10 +1,7 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 
-// import { useRef, useEffect, useCallback } from "react"
-
 import { Highlighter } from "./highlighter";
-// import { resize, handleMouseMove } from "./eventHandlers";
 
 // Three.js essentials
 export const canvas = document.getElementById(
@@ -32,44 +29,3 @@ export const zoneVertices: THREE.Mesh[] = []; // Cube indicators for the zone ve
 export const zoneLines: THREE.Line[] = []; // Lines connecting the zone vertices
 export const xzVertices: number[][] = []; //  World XZ coordinates of the zone vertices
 
-// export default function World3D(props: World3DProps) {
-//   const {
-//     singletons: { camera },
-//     state: { renderer, setRenderer, controls, setControls }
-//   } = props;
-
-//   const canvasRef = useRef<HTMLCanvasElement>(null);
-
-//   const handleResize = useCallback(() => {
-//     /* `useCallback` is required for stable reference to function passed to `window.addEventListener` */
-//     if (!canvasRef.current || !renderer || !camera || !controls) return;
-//     resize(canvasRef.current, renderer, camera, controls);
-//   }, [renderer, camera, controls]);
-
-//   useEffect(() => {
-//     if (canvasRef.current) {
-//       const renderer = new THREE.WebGLRenderer({ canvas: canvasRef.current, antialias: true });
-//       setRenderer(renderer);
-//       setControls(new OrbitControls(camera, renderer.domElement));
-//     }
-//   }, [])
-
-//   useEffect(() => {
-//     handleResize(); // Initial resize to set canvas size
-//     window.addEventListener('resize', handleResize);
-
-//     return () => {
-//       window.removeEventListener('resize', handleResize);
-//     }
-//   }, [handleResize])
-
-//   return (
-//     <canvas
-//       id="threejs-canvas"
-//       ref={canvasRef}
-//       className="block w-full h-[calc(100vh-150px)]"
-//       onMouseMove={(event) => handleMouseMove(event, props)}
-//     >
-//     </canvas>
-//   )
-// }
