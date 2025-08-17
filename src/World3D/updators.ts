@@ -8,7 +8,7 @@ import {
   zoneVertices,
 } from "./World3D";
 import { isPointInPolygon } from "./utils";
-import type { Extrinsics } from "@src/lib/types";
+import type { Extrinsics } from "@/lib/types";
 
 export function updateExtrinsics(extrinsics: Extrinsics) {
   const { translation, rotation } = extrinsics;

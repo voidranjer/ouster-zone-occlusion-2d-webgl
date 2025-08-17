@@ -1,6 +1,6 @@
-import { FLOAT32_SIZE, NUM_PIXELS, NUM_ZONE_VERTICES } from '@src/lib/constants';
-import { compileShader, createProgram, fetchJsonFile } from '@src/lib/utils';
-import { xzVertices } from '@src/World3D';
+import { FLOAT32_SIZE, NUM_PIXELS, NUM_ZONE_VERTICES } from '@/lib/constants';
+import { compileShader, createProgram, fetchJsonFile } from '@/lib/helpers';
+import { xzVertices } from '@/World3D';
 
 export async function initializePointsProgram(gl: WebGL2RenderingContext) {
   const pointsVertexShader = await compileShader(gl, 'shaders/points.vert', gl.VERTEX_SHADER);
@@ -49,7 +49,7 @@ export async function initializePointsProgram(gl: WebGL2RenderingContext) {
 
 export function renderPoints(gl: WebGL2RenderingContext, program: WebGLProgram, vao: WebGLVertexArrayObject) {
   gl.useProgram(program);
-  
+
   if (xzVertices.length === NUM_ZONE_VERTICES) {
     const xzVerticesLocation = gl.getUniformLocation(program, "u_xzVertices");
     gl.uniform2fv(xzVerticesLocation, new Float32Array(xzVertices.flat()));

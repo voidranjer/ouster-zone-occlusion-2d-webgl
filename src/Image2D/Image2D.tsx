@@ -1,4 +1,4 @@
-import { render3js } from "@src/World3D";
+import { render3js } from "@/World3D";
 import { handleResize } from "./eventHandlers";
 import { initializePointsProgram, renderPoints } from "./points";
 import { initializeZoneProgram, renderZone } from "./zone";

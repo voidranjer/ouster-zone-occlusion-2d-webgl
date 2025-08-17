@@ -1,12 +1,12 @@
-import { FLOAT32_SIZE } from '@src/lib/constants';
-import { compileShader, createProgram } from '@src/lib/utils';
-import { xzVertices, xzToClipSpace } from '@src/World3D';
+import { FLOAT32_SIZE } from '@/lib/constants';
+import { compileShader, createProgram } from '@/lib/helpers';
+import { xzVertices, xzToClipSpace } from '@/World3D';
 
 export async function initializeZoneProgram(gl: WebGL2RenderingContext) {
   const zoneVertexShader = await compileShader(gl, 'shaders/zone.vert', gl.VERTEX_SHADER);
   const zoneFragmentShader = await compileShader(gl, 'shaders/zone.frag', gl.FRAGMENT_SHADER);
   const zoneProgram = createProgram(gl, zoneVertexShader, zoneFragmentShader)!;
-  
+
   const zoneVao = gl.createVertexArray();
   const zoneVbo = gl.createBuffer();
   gl.bindVertexArray(zoneVao);
@@ -37,7 +37,7 @@ export function renderZone(gl: WebGL2RenderingContext, program: WebGLProgram, va
   // Important: Explicitly bind the VBO buffer before uploading data
   gl.bindBuffer(gl.ARRAY_BUFFER, vbo);
   gl.bufferData(gl.ARRAY_BUFFER, zoneVertices, gl.DYNAMIC_DRAW);
-  
+
   // Important: Explicitly bind the VAO before drawing
   gl.bindVertexArray(vao);
   gl.useProgram(program);

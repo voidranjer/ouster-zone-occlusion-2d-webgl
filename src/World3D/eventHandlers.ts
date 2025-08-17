@@ -15,8 +15,8 @@ import {
   scene,
   zoneLines,
 } from "./World3D";
-import { NUM_ZONE_VERTICES } from "@src/lib/constants";
-import type { ExtendedWindow } from "@src/lib/types";
+import { NUM_ZONE_VERTICES } from "@/lib/constants";
+import type { ExtendedWindow } from "@/lib/types";
 
 export function handleResize() {
   const width = canvas.clientWidth;
@@ -135,7 +135,12 @@ window.addEventListener('click', (event: MouseEvent) => {
     scene.add(line);
     zoneLines.push(line);
 
-    (window as ExtendedWindow).setAppState({ mode: "normal" }); // Switch back to normal mode after completing the zone
+    (window as ExtendedWindow).setAppState(appState => ({ ...appState, mode: "normal" })); // Switch back to normal mode after completing the zone
     updatePointColors(); // Update point colors when zone is complete
   }
+});
+
+window.addEventListener("dblclick", () => {
+  if ((window as ExtendedWindow).appState.mode !== "highlight") return;
+  (window as ExtendedWindow).setAppState(appState => ({ ...appState, mode: "highlight-freeze" }));
 });

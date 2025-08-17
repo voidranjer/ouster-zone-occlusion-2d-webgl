@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { updateExtrinsics } from '@src/World3D';
+import { updateExtrinsics } from '@/World3D';
 
 export default function ExtrinsicsControls() {
     const [extrinsics, _] = useState({

@@ -3,7 +3,7 @@ import { TransformWrapper, TransformComponent } from "react-zoom-pan-pinch";
 
 import Controls from "./Controls";
 import ExtrinsicsControls from "./ExtrinsicsControls";
-import { start } from "@src/Image2D";
+import { start } from "@/Image2D";
 
 export default function App() {
   useEffect(() => {

@@ -1,10 +1,10 @@
 import * as THREE from 'three';
 
-import { fetchJsonFile } from '@src/lib/utils';
-import { POINTS_SIZE } from '@src/lib/constants';
+import { fetchJsonFile } from '@/lib/helpers';
+import { POINTS_SIZE } from '@/lib/constants';
 import { resetZone } from './updators';
 import { camera, controls, extrinsicsHelper, highlighter, pointCloud, raycaster, renderer, scene } from './World3D';
-import {handleResize} from './eventHandlers';
+import { handleResize } from './eventHandlers';
 
 export async function setup3js() {
   renderer.setPixelRatio(window.devicePixelRatio); // for retina displays

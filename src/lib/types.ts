@@ -1,4 +1,4 @@
-export type AppMode = "normal" | "edit" | "highlight";
+export type AppMode = "normal" | "edit" | "highlight" | "highlight-freeze";
 
 export type AppState = {
   mode: AppMode;

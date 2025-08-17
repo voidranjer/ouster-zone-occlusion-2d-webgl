@@ -1,6 +1,6 @@
 import * as THREE from "three";
 
-import { MAX_RANGE } from "@src/lib/constants";
+import { MAX_RANGE } from "@/lib/constants";
 import { extrinsicsHelper } from "./World3D";
 
 // Helper function to reverse extrinsics and convert world coordinates to local coordinates
