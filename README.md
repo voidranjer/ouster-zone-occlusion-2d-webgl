@@ -2,9 +2,15 @@
 
 A modern WebGL2-based 2D viewer for point cloud data that projects 3D lidar point clouds into 2D cylindrical projections with support for zone highlighting and occlusion handling.
 
-Bootstrapped with [Vite (`vanilla-ts`)](https://vite.dev/guide/).
+![preview](./docs/preview.png)
 
-![Point Cloud Viewer](https://via.placeholder.com/800x400/000000/FFFFFF/?text=2D+Point+Cloud+Viewer+with+Occlusion)
+Built with [WebGL](https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API), [Three.js](https://threejs.org/), and [Vite (`react-ts`)](https://vite.dev/guide/).
+
+## Polar Unwrap Vis
+
+A [p5.js](https://p5js.org/) sketch that performs polar unwrap on a 2D image: <https://editor.p5js.org/voidranjer/sketches/FDnKD_GTy>
+
+![p5.js preview](./docs/p5.png)
 
 ## Overview
 
@@ -184,7 +190,8 @@ npm run preview
 
 ## License
 
-This project is open source and available under the [MIT License](LICENSE).
+- This project is open source and available under the [MIT License](LICENSE).
+- Sample LiDAR point cloud data obtained from [Ouster](https://static.ouster.dev/sdk-docs/sample-data.html).
 
 ## Roadmap
 
