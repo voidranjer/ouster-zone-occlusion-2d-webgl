@@ -1,6 +1,6 @@
 import { FLOAT32_SIZE } from '@/lib/constants';
 import { compileShader, createProgram } from '@/lib/helpers';
-import { xzVertices, xzToClipSpace } from '@/World3D';
+import { xzToClipSpace, zone } from '@/World3D';
 
 export async function initializeZoneProgram(gl: WebGL2RenderingContext) {
   const zoneVertexShader = await compileShader(gl, 'shaders/zone.vert', gl.VERTEX_SHADER);
@@ -22,11 +22,11 @@ export async function initializeZoneProgram(gl: WebGL2RenderingContext) {
 }
 
 export function renderZone(gl: WebGL2RenderingContext, program: WebGLProgram, vao: WebGLVertexArrayObject, vbo: WebGLBuffer) {
-  if (xzVertices.length === 0) return;
+  if (zone.getLocalXz().length === 0) return;
 
   const skyscrapers: number[][] = [];
 
-  xzVertices.forEach(anchor => {
+  zone.getLocalXz().forEach(anchor => {
     const clipSpaceAnchor = xzToClipSpace(anchor[0], anchor[1]);
     skyscrapers.push([clipSpaceAnchor[0], -1, clipSpaceAnchor[1]]);
     skyscrapers.push([clipSpaceAnchor[0], 1, clipSpaceAnchor[1]]);

@@ -3,9 +3,7 @@ import * as THREE from "three";
 import {
   extrinsicsHelper,
   pointCloud,
-  xzVertices,
-  zoneLines,
-  zoneVertices,
+  zone,
 } from "./World3D";
 import { isPointInPolygon } from "./utils";
 import type { Extrinsics } from "@/lib/types";
@@ -65,8 +63,8 @@ export function updatePointColors() {
     const x = positions.getX(i);
     const z = positions.getZ(i);
 
-    // Point-in-polygon test using xzVertices (now in local coordinates)
-    if (xzVertices.length >= 3 && isPointInPolygon(x, z, xzVertices)) {
+    // Point-in-polygon test using pre-extrinsics (THREE.Points stores local coords, and ExtrinsicsHelper applies parent transform)
+    if (isPointInPolygon(x, z, zone.getLocalXz())) {
       // Blend with original color like the shader: keep red channel, add green
       const originalR = originalColors[i * 3];
       colors.setXYZ(i, originalR, 0.5, 0);
@@ -77,22 +75,6 @@ export function updatePointColors() {
 }
 
 export function resetZone() {
-  let xzVertex = xzVertices.pop();
-  while (xzVertex !== undefined) {
-    xzVertex = xzVertices.pop();
-  }
-
-  let vertex = zoneVertices.pop();
-  while (vertex !== undefined) {
-    vertex.removeFromParent();
-    vertex = zoneVertices.pop();
-  }
-
-  let line = zoneLines.pop();
-  while (line !== undefined) {
-    line.removeFromParent();
-    line = zoneLines.pop();
-  }
-
+  zone.reset();
   updatePointColors(); // Reset point colors when zone is cleared
 }

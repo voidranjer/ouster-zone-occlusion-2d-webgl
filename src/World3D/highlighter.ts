@@ -1,5 +1,4 @@
 import * as THREE from "three";
-import { raycaster } from "./World3D";
 
 export class Highlighter {
   static readonly CUBOID_HEIGHT = 200;
@@ -147,7 +146,6 @@ export class Highlighter {
 
     // World3D -> Setup -> Raycaster
     // raycaster.params.Points.threshold = (this.HIGHLIGHT_RADIUS * 0.25);
-    raycaster.params.Points.threshold = (1 * 0.25); // disable dynamic raycaster threshold
   }
 
   // ----------------

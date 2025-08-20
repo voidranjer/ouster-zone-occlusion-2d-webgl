@@ -21,6 +21,7 @@ export function isPointInPolygon(
   z: number,
   vertices: number[][]
 ): boolean {
+  // Must have at least 3 vertices to form a polygon
   if (vertices.length < 3) return false;
 
   let inside = false;
@@ -49,8 +50,8 @@ export function xzToClipSpace(x: number, z: number): [number, number] {
   const normalizedX = (-1 * Math.atan2(-z, x)) / Math.PI;
   const normalizedZ =
     2 *
-      (new THREE.Vector2(x, z).distanceTo(new THREE.Vector2(0, 0)) /
-        MAX_RANGE) -
+    (new THREE.Vector2(x, z).distanceTo(new THREE.Vector2(0, 0)) /
+      MAX_RANGE) -
     1;
   return [normalizedX, normalizedZ];
 }

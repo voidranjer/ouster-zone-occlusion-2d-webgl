@@ -1,6 +1,6 @@
-import { FLOAT32_SIZE, NUM_PIXELS, NUM_ZONE_VERTICES } from '@/lib/constants';
+import { FLOAT32_SIZE, NUM_PIXELS } from '@/lib/constants';
 import { compileShader, createProgram, fetchJsonFile } from '@/lib/helpers';
-import { xzVertices } from '@/World3D';
+import { zone } from '@/World3D';
 
 export async function initializePointsProgram(gl: WebGL2RenderingContext) {
   const pointsVertexShader = await compileShader(gl, 'shaders/points.vert', gl.VERTEX_SHADER);
@@ -50,13 +50,14 @@ export async function initializePointsProgram(gl: WebGL2RenderingContext) {
 export function renderPoints(gl: WebGL2RenderingContext, program: WebGLProgram, vao: WebGLVertexArrayObject) {
   gl.useProgram(program);
 
-  if (xzVertices.length === NUM_ZONE_VERTICES) {
-    const xzVerticesLocation = gl.getUniformLocation(program, "u_xzVertices");
-    gl.uniform2fv(xzVerticesLocation, new Float32Array(xzVertices.flat()));
-  } else {
-    const xzVerticesLocation = gl.getUniformLocation(program, "u_xzVertices");
-    gl.uniform2fv(xzVerticesLocation, new Float32Array(Array(NUM_ZONE_VERTICES * 2).fill(0)));
-  }
+  const xzVerticesLocation = gl.getUniformLocation(program, "u_xzVertices");
+  const numXzLocation = gl.getUniformLocation(program, "u_numXzVertices");
+
+  const numEmptySlots = zone.MAX_ZONE_VERTICES - zone.getLocalXz().length;
+  const emptySlots = Array.from({ length: numEmptySlots }, () => ([0, 0]));
+  const paddedXzVertices = [...zone.getLocalXz(), ...emptySlots];
+  gl.uniform2fv(xzVerticesLocation, new Float32Array(paddedXzVertices.flat()));
+  gl.uniform1i(numXzLocation, zone.getLocalXz().length);
 
   gl.bindVertexArray(vao);
   gl.drawArrays(gl.POINTS, 0, NUM_PIXELS);
