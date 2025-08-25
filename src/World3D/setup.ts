@@ -16,7 +16,8 @@ export async function setup3js() {
   // Orbit controls
   // controls.enableDamping = true; // smooth orbiting
   // controls.dampingFactor = 0.05;
-  controls.screenSpacePanning = false;
+  // controls.screenSpacePanning = true; // Orthographic camera
+  controls.screenSpacePanning = false; // Perspective camera
   controls.maxPolarAngle = Math.PI / 2;
 
   // Helper to apply sensor extrinsics to point cloud and sensor wireframe
@@ -43,7 +44,7 @@ export async function setup3js() {
     // color: new THREE.Color(0, 1, 0),
     vertexColors: true,
     size: POINTS_SIZE,
-    sizeAttenuation: true,  // Enable size attenuation for perspective camera
+    sizeAttenuation: true,  // Enable size attenuation for Perspective camera
   });
   pointCloud.copy(new THREE.Points(geometry, material));
   extrinsicsHelper.add(pointCloud);

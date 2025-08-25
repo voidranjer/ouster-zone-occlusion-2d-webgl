@@ -8,5 +8,5 @@ export const MAX_RANGE = 200; // 200m for OS-1-128
 export const FLOAT32_SIZE = 4; // bytes
 
 // Three.js
-export const POINTS_SIZE = 0.1; // Perspective
-// export const POINTS_SIZE = 2; // Orthographic
+export const POINTS_SIZE = 0.1; // Perspective camera
+// export const POINTS_SIZE = 2; // Orthographic camera
